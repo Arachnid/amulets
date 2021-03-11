@@ -18,13 +18,16 @@ contract Amulet is IAmulet, ERC165 {
     using Address for address;
     using Strings for uint256;
 
-    struct Token {
-        address owner;
-        uint96 blockRevealed;
-    }
-
     // Mapping from token ID to token data
-    mapping (uint256 => Token) private _tokens;
+    // The lower 160 bits are the owner address, and the upper 96 are the
+    // block in which the amulet was revealed. This is equivalent to the
+    // following Solidity structure, but saves us about 4200 gas on mint,
+    // 3600 gas on reveal, and 140 gas on transfer.
+    // struct Token {
+    //   uint96 blockRevealed;
+    //   address owner;
+    // }
+    mapping (uint256 => uint256) private _tokens;
 
     // Mapping from token ID to approved address
     mapping (uint256 => address) private _tokenApprovals;
@@ -58,7 +61,7 @@ contract Amulet is IAmulet, ERC165 {
      * @dev See {IERC721-ownerOf}.
      */
     function ownerOf(uint256 tokenId) public view virtual override returns (address) {
-        address owner = _tokens[tokenId].owner;
+        address owner = address(uint160(_tokens[tokenId]));
         require(owner != address(0), "ERC721: owner query for nonexistent token");
         return owner;
     }
@@ -189,9 +192,9 @@ contract Amulet is IAmulet, ERC165 {
      *      if it's not revealed and they won't show you the text of the amulet.
      */
     function isRevealed(uint256 tokenId) external override view returns(bool) {
-        Token memory t = _tokens[tokenId];
-        require(t.owner != address(0), "ERC721: isRevealed query for nonexistent token");
-        return t.blockRevealed > 0;
+        uint256 t = _tokens[tokenId];
+        require(t & 0x00ffffffffffffffffffffffffffffffffffffffff != 0, "ERC721: isRevealed query for nonexistent token");
+        return t >> 160 > 0;
     }
     
     /**
@@ -214,10 +217,10 @@ contract Amulet is IAmulet, ERC165 {
         require(bytes(amulet).length <= 64, "Amulet: Too long");
         uint256 tokenId = uint256(sha256(bytes(amulet)));
         
-        Token memory t = _tokens[tokenId];
-        require(t.owner != address(0), "Amulet: Does not exist");
-        require(t.blockRevealed == 0, "Amulet: Already revealed");
-        t.blockRevealed = uint96(block.number);
+        uint256 t = _tokens[tokenId];
+        require(t & 0x00ffffffffffffffffffffffffffffffffffffffff != 0, "Amulet: Does not exist");
+        require(t >> 160 == 0, "Amulet: Already revealed");
+        t |= block.number << 160;
         _tokens[tokenId] = t;
         emit AmuletRevealed(tokenId, msg.sender, title, amulet, offsetURL);
     }
@@ -226,9 +229,10 @@ contract Amulet is IAmulet, ERC165 {
      * @dev Returns the Amulet's owner address and the block it was revealed in.
      */
     function getData(uint256 tokenId) external override view returns(address owner, uint96 blockRevealed) {
-        Token memory t = _tokens[tokenId];
-        require(t.owner != address(0), "ERC721: getData query for nonexistent token");
-        return (t.owner, t.blockRevealed);
+        uint256 t = _tokens[tokenId];
+        owner = address(uint160(t));
+        require(owner != address(0), "ERC721: getData query for nonexistent token");
+        return (owner, uint96(t >> 160));
     }
 
     /**************************************************************************
@@ -267,7 +271,7 @@ contract Amulet is IAmulet, ERC165 {
      * and stop existing when they are burned (`_burn`).
      */
     function _exists(uint256 tokenId) internal view virtual returns (bool) {
-        return _tokens[tokenId].owner != address(0);
+        return _tokens[tokenId] & 0x00ffffffffffffffffffffffffffffffffffffffff != 0;
     }
 
     /**
@@ -321,10 +325,8 @@ contract Amulet is IAmulet, ERC165 {
     function _mint(address to, uint256 tokenId) internal virtual {
         require(to != address(0), "ERC721: mint to the zero address");
 
-        Token memory t = _tokens[tokenId];
-        require(t.owner == address(0), "ERC721: token already minted");
-        t.owner = to;
-        _tokens[tokenId] = t;
+        require(_tokens[tokenId] == 0, "ERC721: token already minted");
+        _tokens[tokenId] = uint256(uint160(to));
 
         emit Transfer(address(0), to, tokenId);
     }
@@ -347,7 +349,7 @@ contract Amulet is IAmulet, ERC165 {
         // Clear approvals from the previous owner
         _approve(address(0), tokenId);
 
-        _tokens[tokenId].owner = to;
+        _tokens[tokenId] = (_tokens[tokenId] & 0xffffffffffffffffffffffff0000000000000000000000000000000000000000) | uint160(to);
 
         emit Transfer(from, to, tokenId);
     }

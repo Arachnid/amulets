@@ -39,6 +39,7 @@ describe("Amulet", function() {
     const data = await contract.getData(hash);
     expect(data[0]).to.equal(accounts[0].address);
     expect(data[1].toNumber()).to.equal(0);
+    expect(await contract.ownerOf(hash)).to.equal(accounts[0].address);
   });
 
   it("should reveal amulets", async () => {
@@ -61,4 +62,15 @@ describe("Amulet", function() {
     expect(data[0]).to.equal(accounts[0].address);
     expect(data[1].toNumber()).to.equal(receipt.blockNumber);
   });
+
+  it("should transfer amulets", async () => {
+    const hash = hashAmulet(AMULET_1);
+    await (await contract.mint(accounts[0].address, hash)).wait();
+
+    const tx = await contract.transferFrom(accounts[0].address, accounts[1].address, hash);
+    const receipt = await tx.wait();
+    console.log(`Transfer: ${receipt.gasUsed} gas`);
+
+    expect(await contract.ownerOf(hash)).to.equal(accounts[1].address);
+  })
 });
