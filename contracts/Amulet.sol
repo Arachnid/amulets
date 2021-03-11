@@ -86,7 +86,7 @@ contract Amulet is IAmulet, ERC165 {
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
-        return string(abi.encodePacked("https://amulet.art/token/", tokenId.toHexString(), ".json"));
+        return string(abi.encodePacked("https://at.amulet.garden/token/", tokenId.toHexString(), ".json"));
     }
 
     /**
