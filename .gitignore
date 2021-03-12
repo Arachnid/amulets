@@ -1,6 +1,7 @@
-node_modules
+**/node_modules
 
 #Hardhat files
-cache
-artifacts
-server/env
+packages/hardhat/cache
+packages/hardhat/artifacts
+packages/react-app/src/contracts
+packages/server/env
