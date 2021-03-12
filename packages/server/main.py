@@ -21,6 +21,7 @@ def load_contract(name):
         abi = json.load(f)['abi']
     with open('contracts/%s.address' % (name,)) as f:
         address = f.read()
+    print(address)
     return w3.eth.contract(abi=abi, address=address)
 
 
@@ -30,7 +31,7 @@ app = Flask(__name__)
 
 @app.template_filter()
 def mdescape(s):
-    return Markup(re.sub("([]!\"#$%&'()*+,-./:;<=>?@[\\^_`{}~])", r"\\\1", s))
+    return Markup(re.sub("([]*_#=`~<>+.()\\&_[-])", r"\\\1", s))
 
 @app.route('/token/0x<string:tokenhash>')
 def token(tokenhash):

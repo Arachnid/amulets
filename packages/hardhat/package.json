@@ -14,8 +14,8 @@
     "chain": "hardhat node",
     "test": "hardhat test --network hardhat",
     "compile": "hardhat compile",
-    "deploy": "hardhat deploy",
+    "deploy": "hardhat --network test deploy",
     "postdeploy": "hardhat run scripts/publish.js",
-    "mint": "hardhat mint"
+    "mint": "hardhat --network test mint"
   }
 }
