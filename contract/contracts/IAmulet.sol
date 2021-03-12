@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 interface IAmulet is IERC721, IERC721Metadata {
-    event AmuletRevealed(uint256 indexed tokenId, address revealedBy, string title, string amulet, string offsetURL);
+    event AmuletRevealed(uint256 indexed tokenId, address revealedBy, string title, string amulet, string offsetUrl);
 
     /**
      * @dev Returns the score of an amulet.
