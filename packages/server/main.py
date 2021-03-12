@@ -16,8 +16,17 @@ RARITIES = {
 }
 
 
+def load_contract(name):
+    with open('contracts/%s.json' % (name,)) as f:
+        abi = json.load(f)['abi']
+    with open('contracts/%s.address' % (name,)) as f:
+        address = f.read()
+    return w3.eth.contract(abi=abi, address=address)
+
+
+contract = load_contract('Amulet')
 app = Flask(__name__)
-contract = w3.eth.contract(abi=json.load(open('abis/Amulet.json'))['abi'], address=os.environ['AMULET_CONTRACT_ADDRESS'])
+
 
 @app.template_filter()
 def mdescape(s):
