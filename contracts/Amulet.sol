@@ -19,12 +19,14 @@ contract Amulet is IAmulet, ERC165 {
     using Strings for uint256;
 
     // Mapping from token ID to token data
-    // The lower 160 bits are the owner address, and the upper 96 are the
-    // block in which the amulet was revealed. This is equivalent to the
-    // following Solidity structure, but saves us about 4200 gas on mint,
-    // 3600 gas on reveal, and 140 gas on transfer.
+    // Values are packed in the form:
+    // [score (32 bits)][blockRevealed (64 bits)][owner (160 bits)]
+    // This is equivalent to the following Solidity structure,
+    // but saves us about 4200 gas on mint, 3600 gas on reveal,
+    // and 140 gas on transfer.
     // struct Token {
-    //   uint96 blockRevealed;
+    //   uint32 score;
+    //   uint64 blockRevealed;
     //   address owner;
     // }
     mapping (uint256 => uint256) private _tokens;
@@ -170,11 +172,12 @@ contract Amulet is IAmulet, ERC165 {
      *      9: mythic
      *      10+: beyond mythic
      */
-    function score(uint256 tokenId) public override pure returns(uint) {
-        uint maxlen = 0;
-        uint len = 0;
-        for(;tokenId > 0; tokenId >>= 4) {
-            if(tokenId & 0xF == 8) {
+    function getScore(string calldata amulet) public override pure returns(uint32) {
+        uint256 hash = uint256(sha256(bytes(amulet)));
+        uint32 maxlen = 0;
+        uint32 len = 0;
+        for(;hash > 0; hash >>= 4) {
+            if(hash & 0xF == 8) {
                 len += 1;
                 if(len > maxlen) {
                     maxlen = len;
@@ -192,9 +195,9 @@ contract Amulet is IAmulet, ERC165 {
      *      if it's not revealed and they won't show you the text of the amulet.
      */
     function isRevealed(uint256 tokenId) external override view returns(bool) {
-        uint256 t = _tokens[tokenId];
-        require(t & 0x00ffffffffffffffffffffffffffffffffffffffff != 0, "ERC721: isRevealed query for nonexistent token");
-        return t >> 160 > 0;
+        (address owner, uint64 blockRevealed,) = getData(tokenId);
+        require(owner != address(0), "ERC721: isRevealed query for nonexistent token");
+        return blockRevealed > 0;
     }
     
     /**
@@ -203,7 +206,6 @@ contract Amulet is IAmulet, ERC165 {
      * @param tokenId The tokenId, which is the sha256 hash of the text of the amulet.
      */
     function mint(address owner, uint256 tokenId) external override {
-        require(score(tokenId) >= 3, "Amulet: Too common");
         _safeMint(owner, tokenId);
     }
 
@@ -215,24 +217,33 @@ contract Amulet is IAmulet, ERC165 {
      */
     function reveal(string calldata title, string calldata amulet, string calldata offsetURL) external override {
         require(bytes(amulet).length <= 64, "Amulet: Too long");
-        uint256 tokenId = uint256(sha256(bytes(amulet)));
-        
-        uint256 t = _tokens[tokenId];
-        require(t & 0x00ffffffffffffffffffffffffffffffffffffffff != 0, "Amulet: Does not exist");
-        require(t >> 160 == 0, "Amulet: Already revealed");
-        t |= block.number << 160;
-        _tokens[tokenId] = t;
+        uint256 tokenId = uint256(keccak256(bytes(amulet)));
+        (address owner, uint64 blockRevealed, uint32 score) = getData(tokenId);
+
+        require(blockRevealed == 0, "Amulet: Already revealed");
+        score = getScore(amulet);
+        require(score >= 4, "Amulet: Score too low");
+
+        setData(tokenId, owner, uint64(block.number), score);
         emit AmuletRevealed(tokenId, msg.sender, title, amulet, offsetURL);
     }
 
     /**
-     * @dev Returns the Amulet's owner address and the block it was revealed in.
+     * @dev Returns the Amulet's owner address, the block it was revealed in, and its score.
      */
-    function getData(uint256 tokenId) external override view returns(address owner, uint96 blockRevealed) {
+    function getData(uint256 tokenId) public override view returns(address owner, uint64 blockRevealed, uint32 score) {
         uint256 t = _tokens[tokenId];
         owner = address(uint160(t));
         require(owner != address(0), "ERC721: getData query for nonexistent token");
-        return (owner, uint96(t >> 160));
+        blockRevealed = uint64(t >> 160);
+        score = uint32(t >> 224);
+    }
+
+    /**
+     * @dev Sets the amulet's owner address, reveal block, and score.
+     */
+    function setData(uint256 tokenId, address owner, uint64 blockRevealed, uint32 score) internal {
+        _tokens[tokenId] = uint256(uint160(owner)) | (uint256(blockRevealed) << 160) | (uint256(score) << 224);
     }
 
     /**************************************************************************

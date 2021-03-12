@@ -19,7 +19,7 @@ interface IAmulet is IERC721, IERC721Metadata {
      *      9: mythic
      *      10+: beyond mythic
      */
-    function score(uint256 tokenId) external pure returns(uint);
+    function getScore(string calldata amulet) external pure returns(uint32);
 
     /**
      * @dev Returns true if an amulet has been revealed.
@@ -44,7 +44,7 @@ interface IAmulet is IERC721, IERC721Metadata {
     function reveal(string calldata title, string calldata amulet, string calldata offsetURL) external;
     
     /**
-     * @dev Returns the Amulet's owner address and the block it was revealed in.
+     * @dev Returns the Amulet's owner address, the block it was revealed in, and its score.
      */
-    function getData(uint256 tokenId) external view returns(address owner, uint96 blockDescribed);
+    function getData(uint256 tokenId) external view returns(address owner, uint64 blockRevealed, uint32 score);
 }
