@@ -8,13 +8,14 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./IAmulet.sol";
+import "./ProxyRegistryWhitelist.sol";
 
 /**
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
  * the Metadata extension, but not including the Enumerable extension, which is available separately as
  * {ERC721Enumerable}.
  */
-contract Amulet is IAmulet, ERC165 {
+contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     using Address for address;
     using Strings for uint256;
 
@@ -37,7 +38,14 @@ contract Amulet is IAmulet, ERC165 {
     // Mapping from owner to operator approvals
     mapping (address => mapping (address => bool)) private _operatorApprovals;
 
-    constructor () { }
+    constructor (address proxyRegistryAddress) ProxyRegistryWhitelist(proxyRegistryAddress) { }
+
+    /**************************************************************************
+     * Opensea-specific methods
+     *************************************************************************/
+    function contractURI() external pure returns (string memory) {
+        return "https://at.amulet.garden/contract.json";
+    }
 
     /**************************************************************************
      * ERC721 methods
@@ -128,7 +136,7 @@ contract Amulet is IAmulet, ERC165 {
      * @dev See {IERC721-isApprovedForAll}.
      */
     function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
-        return _operatorApprovals[owner][operator];
+        return _operatorApprovals[owner][operator] || isProxyForOwner(owner, operator);
     }
 
     /**

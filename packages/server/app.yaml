@@ -1,6 +1,9 @@
 runtime: python39
 
 handlers:
+ - url: /contract.json
+   static_files: static/contract.json
+   mime_type: application/json
  - url: /.*
    script: auto
 

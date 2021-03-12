@@ -18,7 +18,7 @@ describe("Amulet", function() {
   
   beforeEach(async () => {
     const Contract = await ethers.getContractFactory("Amulet");
-    contract = await Contract.deploy();
+    contract = await Contract.deploy('0x0000000000000000000000000000000000000000');
     await contract.deployed();
   });
 
