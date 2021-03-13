@@ -1,0 +1,37 @@
+<svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .poem {
+            font: 70px Helvetica;
+            dominant-baseline: middle;
+        }
+        .onelinepoem {
+            font: 70px Helvetica;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        .lighthex {
+            fill: {{lightcolor}};
+        }
+        .darkhex {
+            fill: {{darkcolor}};
+        }
+    </style>
+    <defs>
+        <g id="icon">
+            <polygon points="40,0 80,20 80,60 40,80 0,60 0,20" class="darkhex" />
+            <polygon points="40,0 40,10 10,26 10,52, 0,60, 0,20" class="lighthex" />
+        </g>
+    </defs>
+    {% for char in hash -%}
+        {%- if char == 56 -%}
+            <use x="{{(loop.index % 8) * 80}}" y="{{(loop.index // 8) * 80}}" xlink:href="#icon" />
+        {% endif %}
+    {%- endfor %}
+    {% if wrapped|length == 1 %}
+        <text class="onelinepoem" x="320" y="320">{{wrapped[0]}}</text>
+    {% else %}
+        {% for line in wrapped %}
+            <text class="poem" x="0" y="{{(loop.index - 1) * 80 + 40}}">{{line}}</text>
+        {% endfor %}
+    {% endif %}
+</svg>

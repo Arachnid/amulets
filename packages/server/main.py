@@ -1,9 +1,13 @@
+from binascii import hexlify
 from collections import namedtuple
+import colorsys
 from flask import Flask, jsonify, render_template
+from hashlib import sha256
 import json
 from markupsafe import Markup
 import os
 import re
+import textwrap
 from web3.auto import w3
 
 
@@ -61,11 +65,33 @@ def metadata(tokenhash):
     else:
         return amuletResponse(amulet)
 
+
+def make_color(hue, sat, val):
+    color = colorsys.hsv_to_rgb(hue / 255, sat / 255, val / 255)
+    return '#%.2x%.2x%.2x' % tuple(int(c * 255) for c in color)
+
+
+@app.route('/token/0x<string:tokenhash>.svg')
+def tokenimage(tokenhash):
+    amulet = getAmuletData(int(tokenhash, 16))
+    h = hexlify(sha256(amulet.amulet.encode('utf-8')).digest())
+    colorseed = int(tokenhash[:2], 16)
+    args = {
+        'info': amulet,
+        'hash': h,
+        'wrapped': textwrap.wrap(amulet.amulet, 16),
+        'lightcolor': make_color(colorseed, 255, 128),
+        'darkcolor': make_color(colorseed, 255, 192),
+    }
+    return render_template('amulet.svg', **args)
+
+
 def mysteriousAmuletResponse(info):
     return jsonify({
         'name': 'A mysterious amulet',
         'description': "A mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
     })
+
 
 def amuletResponse(info):
     args = {
