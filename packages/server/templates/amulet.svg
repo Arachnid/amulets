@@ -1,4 +1,4 @@
-<svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <style>
         .poem {
             font: 70px Helvetica;
@@ -18,8 +18,8 @@
     </style>
     <defs>
         <g id="icon">
-            <polygon points="40,0 80,20 80,60 40,80 0,60 0,20" class="darkhex" />
-            <polygon points="40,0 40,10 10,26 10,52, 0,60, 0,20" class="lighthex" />
+            <polygon points="40,5 75,25 75,55 40,75 5,55 5,25" class="darkhex" />
+            <polygon points="40,5 40,15 15,31 15,47, 5,55, 5,25" class="lighthex" />
         </g>
     </defs>
     {% for char in hash -%}

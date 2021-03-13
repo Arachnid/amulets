@@ -79,8 +79,8 @@ def tokenimage(tokenhash):
         'info': amulet,
         'hash': h,
         'wrapped': textwrap.wrap(amulet.amulet, 16),
-        'lightcolor': make_color(colorseed, 255, 128),
-        'darkcolor': make_color(colorseed, 255, 192),
+        'lightcolor': make_color(colorseed, 128, 128),
+        'darkcolor': make_color(colorseed, 128, 192),
     }
     return render_template('amulet.svg', **args)
 
