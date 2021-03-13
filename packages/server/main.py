@@ -26,7 +26,6 @@ def load_contract(name):
         abi = json.load(f)['abi']
     with open('contracts/%s.address' % (name,)) as f:
         address = f.read()
-    print(address)
     return w3.eth.contract(abi=abi, address=address)
 
 
@@ -61,9 +60,9 @@ def metadata(tokenhash):
     tokenid = int(tokenhash, 16)
     amulet = getAmuletData(tokenid)
     if amulet.score == 0:
-        return mysteriousAmuletResponse(amulet)
+        return mysteriousAmuletResponse(tokenhash, amulet)
     else:
-        return amuletResponse(amulet)
+        return amuletResponse(tokenhash, amulet)
 
 
 def make_color(hue, sat, val):
@@ -86,14 +85,14 @@ def tokenimage(tokenhash):
     return render_template('amulet.svg', **args)
 
 
-def mysteriousAmuletResponse(info):
+def mysteriousAmuletResponse(tokenhash, info):
     return jsonify({
         'name': 'A mysterious amulet',
         'description': "A mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
     })
 
 
-def amuletResponse(info):
+def amuletResponse(tokenhash, info):
     args = {
         'info': info,
         'length': len(info.amulet.encode('utf-8')),
@@ -103,6 +102,7 @@ def amuletResponse(info):
         'name': info.title,
         'description': render_template('amulet.md', **args),
         'poem': info.amulet,
+        'image': "https://at.amulet.garden/token/0x%s.svg" % tokenhash,
         'attributes': [
             {
                 'trait_type': 'Score',
