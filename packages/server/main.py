@@ -1,3 +1,4 @@
+from collections import namedtuple
 from flask import Flask, jsonify, render_template
 import json
 from markupsafe import Markup
@@ -33,45 +34,53 @@ app = Flask(__name__)
 def mdescape(s):
     return Markup(re.sub("([]*_#=`~<>+.()\\&_[-])", r"\\\1", s))
 
-@app.route('/token/0x<string:tokenhash>')
-def token(tokenhash):
-    tokenid = int(tokenhash, 16)
+
+AmuletInfo = namedtuple('AmuletInfo', ['id', 'owner', 'score', 'title', 'amulet', 'offsetUrl'])
+
+
+def getAmuletData(tokenid):
     owner, blockRevealed, score = contract.functions.getData(tokenid).call()
-    if blockRevealed == 0:
-        return mysteriousAmuletResponse(tokenid, owner)
+    if blockRevealed > 0:
+        events = list(contract.events.AmuletRevealed.getLogs(
+            argument_filters={'tokenId': tokenid},
+            fromBlock=blockRevealed,
+            toBlock=blockRevealed))
+        if(len(events) == 1):
+            event = events[0]
+            return AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
+        else:
+            return AmuletInfo(tokenid, owner, score, None, None, None)
+        
+
+@app.route('/token/0x<string:tokenhash>.json')
+def metadata(tokenhash):
+    tokenid = int(tokenhash, 16)
+    amulet = getAmuletData(tokenid)
+    if amulet.score == 0:
+        return mysteriousAmuletResponse(amulet)
     else:
-        return amuletResponse(tokenid, owner, blockRevealed, score)
+        return amuletResponse(amulet)
 
-
-def mysteriousAmuletResponse(tokenid, owner):
+def mysteriousAmuletResponse(info):
     return jsonify({
         'name': 'A mysterious amulet',
         'description': "A mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
     })
 
-def amuletResponse(tokenid, owner, blockRevealed, score):
-    events = list(contract.events.AmuletRevealed.getLogs(
-        argument_filters={'tokenId': tokenid},
-        fromBlock=blockRevealed,
-        toBlock=blockRevealed))
-    if(len(events) != 1):
-        abort(500)
-    event = events[0]
+def amuletResponse(info):
     args = {
-        'owner': owner,
-        'score': score,
-        'length': len(event.args.amulet.encode('utf-8')),
-        'rarity': RARITIES.get(score, "Beyond Mythic"),
-        'event': event['args'],
+        'info': info,
+        'length': len(info.amulet.encode('utf-8')),
+        'rarity': RARITIES.get(info.score, "Beyond Mythic"),
     }
     return jsonify({
-        'name': event.args.title,
+        'name': info.title,
         'description': render_template('amulet.md', **args),
-        'poem': event.args.amulet,
+        'poem': info.amulet,
         'attributes': [
             {
                 'trait_type': 'Score',
-                'value': score,
+                'value': info.score,
             }, {
                 'trait_type': 'Rarity',
                 'value': args['rarity']
