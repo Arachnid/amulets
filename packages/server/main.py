@@ -6,8 +6,10 @@ from hashlib import sha256
 import json
 from markupsafe import Markup
 import os
+import pylru
 import re
 import textwrap
+import time
 from web3.auto import w3
 
 
@@ -20,6 +22,10 @@ RARITIES = {
     9: 'Mythic'
 }
 
+CACHE_SIZE = 65536
+MYSTERIOUS_CACHE_DURATION = 60
+KNOWN_CACHE_DURATION = 86400
+
 
 def load_contract(name):
     with open('contracts/%s.json' % (name,)) as f:
@@ -31,7 +37,7 @@ def load_contract(name):
 
 contract = load_contract('Amulet')
 app = Flask(__name__)
-
+amulet_cache = pylru.lrucache(CACHE_SIZE)
 
 @app.template_filter()
 def mdescape(s):
@@ -42,7 +48,13 @@ AmuletInfo = namedtuple('AmuletInfo', ['id', 'owner', 'score', 'title', 'amulet'
 
 
 def getAmuletData(tokenid):
+    if tokenid in amulet_cache:
+        expires, info = amulet_cache[tokenid]
+        if expires > time.time():
+            return info
+
     owner, blockRevealed, score = contract.functions.getData(tokenid).call()
+    info = AmuletInfo(tokenid, owner, score, None, None, None)
     if blockRevealed > 0:
         events = list(contract.events.AmuletRevealed.getLogs(
             argument_filters={'tokenId': tokenid},
@@ -50,9 +62,9 @@ def getAmuletData(tokenid):
             toBlock=blockRevealed))
         if(len(events) == 1):
             event = events[0]
-            return AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
-        else:
-            return AmuletInfo(tokenid, owner, score, None, None, None)
+            info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
+    amulet_cache[tokenid] = (time.time() + MYSTERIOUS_CACHE_DURATION if info.score == 0 else KNOWN_CACHE_DURATION, info)
+    return info
         
 
 @app.route('/token/0x<string:tokenhash>.json')
