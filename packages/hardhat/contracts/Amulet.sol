@@ -317,6 +317,7 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
      */
     function _mint(address to, uint256 id) internal virtual {
         require(to != address(0), "ERC1155: mint to the zero address");
+        require(_tokens[id] == 0, "ERC1155: mint of existing token");
 
         _tokens[id] = uint256(uint160(to));
         emit TransferSingle(msg.sender, address(0), to, id, 1);

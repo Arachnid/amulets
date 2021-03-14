@@ -24,17 +24,9 @@ describe("Amulet", function() {
 
   it("should mint amulets", async () => {
     const id = getTokenId(AMULET_1);
-    const tx = await contract.mint(accounts[0].address, id);
-    const receipt = await tx.wait();
-    console.log(`Mint: ${receipt.gasUsed} gas`);
-
-    expect(receipt.events.length).to.equal(1);
-    expect(receipt.events[0].event).to.equal('TransferSingle');
-    expect(receipt.events[0].args[0]).to.equal(accounts[0].address);
-    expect(receipt.events[0].args[1]).to.equal('0x0000000000000000000000000000000000000000');
-    expect(receipt.events[0].args[2]).to.equal(accounts[0].address);
-    expect(receipt.events[0].args[3].toHexString()).to.equal(id.toString('hex'));
-    expect(receipt.events[0].args[4]).to.equal(1);
+    await expect(contract.mint(accounts[0].address, id))
+      .to.emit(contract, "TransferSingle")
+      .withArgs(accounts[0].address, '0x0000000000000000000000000000000000000000', accounts[0].address, id.toString('hex'), 1);
 
     expect(await contract.isRevealed(id)).to.equal(false);
     const data = await contract.getData(id);
@@ -51,19 +43,14 @@ describe("Amulet", function() {
   
     const title = "common amulets, 3 of 3";
     const offset = "example.com";
-    const tx = await contract.reveal(title, AMULET_1, offset);
-    const receipt = await tx.wait();
-    console.log(`Reveal: ${receipt.gasUsed} gas`);
-
-    expect(receipt.events.length).to.equal(1);
-    expect(receipt.events[0].event).to.equal('AmuletRevealed');
-    expect(receipt.events[0].args[0].toHexString()).to.equal(id.toString('hex'));
-    expect(receipt.events[0].args.slice(1)).to.deep.equal([accounts[0].address, title, AMULET_1, offset]);
+    await expect(contract.reveal(title, AMULET_1, offset))
+      .to.emit(contract, 'AmuletRevealed')
+      .withArgs(id.toString('hex'), accounts[0].address, title, AMULET_1, offset);
 
     expect(await contract.isRevealed(id)).to.equal(true);
     const data = await contract.getData(id);
     expect(data[0]).to.equal(accounts[0].address); // owner
-    expect(data[1].toNumber()).to.equal(receipt.blockNumber); // blockRevealed
+    expect(data[1].toNumber()).to.be.greaterThan(0); // blockRevealed
     expect(data[2]).to.equal(4); // Score
   });
 
@@ -71,9 +58,9 @@ describe("Amulet", function() {
     const id = getTokenId(AMULET_1);
     await (await contract.mint(accounts[0].address, id)).wait();
 
-    const tx = await contract.safeTransferFrom(accounts[0].address, accounts[1].address, id, 1, "0x");
-    const receipt = await tx.wait();
-    console.log(`Transfer: ${receipt.gasUsed} gas`);
+    await expect(contract.safeTransferFrom(accounts[0].address, accounts[1].address, id, 1, "0x"))
+      .to.emit(contract, 'TransferSingle')
+      .withArgs(accounts[0].address, accounts[0].address, accounts[1].address, id.toString('hex'), 1);
 
     expect(await contract.ownerOf(id)).to.equal(accounts[1].address);
     expect(await contract.balanceOf(accounts[0].address, id)).to.equal(0);
