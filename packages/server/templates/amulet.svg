@@ -1,11 +1,12 @@
 <svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <style>
         .poem {
-            font: 70px Helvetica;
+            font: 70px monospace;
             dominant-baseline: middle;
+            text-anchor: middle;
         }
         .onelinepoem {
-            font: 70px Helvetica;
+            font: 70px monospace;
             text-anchor: middle;
             dominant-baseline: middle;
         }
@@ -24,14 +25,10 @@
     </defs>
     {% for char in hash -%}
         {%- if char == 56 -%}
-            <use x="{{(loop.index % 8) * 80}}" y="{{(loop.index // 8) * 80}}" xlink:href="#icon" />
+            <use x="{{(loop.index0 % 8) * 80}}" y="{{(loop.index0 // 8) * 80}}" xlink:href="#icon" />
         {% endif %}
     {%- endfor %}
-    {% if wrapped|length == 1 %}
-        <text class="onelinepoem" x="320" y="320">{{wrapped[0]}}</text>
-    {% else %}
-        {% for line in wrapped %}
-            <text class="poem" x="0" y="{{(loop.index - 1) * 80 + 40}}">{{line}}</text>
-        {% endfor %}
-    {% endif %}
+    <text class="poem" x="{% for char in text %}{{(loop.index0 % 8) * 80 + 40}} {% endfor %}" y="{% for char in text %}{{(loop.index0 // 8) * 80 + 40}} {% endfor %}">
+        {{text}}
+    </text>
 </svg>

@@ -8,7 +8,6 @@ from markupsafe import Markup
 import os
 import pylru
 import re
-import textwrap
 import time
 from web3.auto import w3
 
@@ -38,6 +37,7 @@ def load_contract(name):
 contract = load_contract('Amulet')
 app = Flask(__name__)
 amulet_cache = pylru.lrucache(CACHE_SIZE)
+visible_whitespace = str.maketrans(' \n\t', '·⏎⇥')
 
 @app.template_filter()
 def mdescape(s):
@@ -97,7 +97,7 @@ def tokenimage(tokenhash):
     args = {
         'info': amulet,
         'hash': h,
-        'wrapped': textwrap.wrap(amulet.amulet, 16),
+        'text': amulet.amulet.translate(visible_whitespace),
         'lightcolor': make_color(colorseed, 128, 128),
         'darkcolor': make_color(colorseed, 128, 192),
     }
