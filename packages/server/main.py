@@ -1,7 +1,7 @@
 from binascii import hexlify
 from collections import namedtuple
 import colorsys
-from flask import Flask, jsonify, render_template
+from flask import Flask, abort, jsonify, render_template
 from hashlib import sha256
 import json
 from markupsafe import Markup
@@ -58,7 +58,11 @@ def getAmuletData(tokenid):
 @app.route('/token/0x<string:tokenhash>.json')
 def metadata(tokenhash):
     tokenid = int(tokenhash, 16)
+    if tokenid > (1 << 256) - 1:
+        abort(404)
     amulet = getAmuletData(tokenid)
+    if not amulet:
+        abort(404)
     if amulet.score == 0:
         return mysteriousAmuletResponse(tokenhash, amulet)
     else:
@@ -72,7 +76,10 @@ def make_color(hue, sat, val):
 
 @app.route('/token/0x<string:tokenhash>.svg')
 def tokenimage(tokenhash):
-    amulet = getAmuletData(int(tokenhash, 16))
+    tokenid = int(tokenhash, 16)
+    if tokenid > (1 << 256) - 1:
+        abort(404)
+    amulet = getAmuletData(tokenid)
     h = hexlify(sha256(amulet.amulet.encode('utf-8')).digest())
     colorseed = int(tokenhash[:2], 16)
     args = {
