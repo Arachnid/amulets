@@ -54,6 +54,16 @@ describe("Amulet", function() {
     expect(data[2]).to.equal(4); // Score
   });
 
+  it("should permit a reveal without a mint", async () => {
+    const id = getTokenId(AMULET_2);
+    await expect(contract.reveal("Test", AMULET_2, "https://example.com/"))
+      .to.emit(contract, 'AmuletRevealed')
+      .withArgs(id.toString('hex'), accounts[0].address, "Test", AMULET_2, "https://example.com/");
+    
+      expect(await contract.isRevealed(id)).to.equal(true);
+      expect(await contract.balanceOf(accounts[0].address, id)).to.equal(1);
+  });
+
   it("should transfer amulets", async () => {
     const id = getTokenId(AMULET_1);
     await (await contract.mint(accounts[0].address, id)).wait();

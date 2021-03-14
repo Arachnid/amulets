@@ -277,6 +277,9 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
         require(blockRevealed == 0, "Amulet: Already revealed");
         score = getScore(amulet);
         require(score >= 4, "Amulet: Score too low");
+        if(owner == address(0)) {
+            owner = msg.sender;
+        }
 
         setData(tokenId, owner, uint64(block.number), score);
         emit AmuletRevealed(tokenId, msg.sender, title, amulet, offsetURL);
@@ -288,7 +291,6 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     function getData(uint256 tokenId) public override view returns(address owner, uint64 blockRevealed, uint32 score) {
         uint256 t = _tokens[tokenId];
         owner = address(uint160(t));
-        require(owner != address(0), "ERC721: getData query for nonexistent token");
         blockRevealed = uint64(t >> 160);
         score = uint32(t >> 224);
     }
