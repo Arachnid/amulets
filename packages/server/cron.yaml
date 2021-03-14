@@ -1,0 +1,4 @@
+cron:
+- description: "check for revealed amulets"
+  url: /cron
+  schedule: every 5 minutes

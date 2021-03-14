@@ -8,6 +8,7 @@ from markupsafe import Markup
 import os
 import pylru
 import re
+import requests
 import time
 from web3.auto import w3
 
@@ -24,6 +25,7 @@ RARITIES = {
 CACHE_SIZE = 65536
 MYSTERIOUS_CACHE_DURATION = 60
 KNOWN_CACHE_DURATION = 86400
+OPENSEA_DOMAIN = "testnets-api.opensea.io"
 
 
 def load_contract(name):
@@ -38,13 +40,13 @@ contract = load_contract('Amulet')
 app = Flask(__name__)
 amulet_cache = pylru.lrucache(CACHE_SIZE)
 visible_whitespace = str.maketrans(' \n\t', '·⏎⇥')
+AmuletInfo = namedtuple('AmuletInfo', ['id', 'owner', 'score', 'title', 'amulet', 'offsetUrl'])
+last_block_scanned = None
+
 
 @app.template_filter()
 def mdescape(s):
     return Markup(re.sub("([]*_#=`~<>+.()\\&_[-])", r"\\\1", s))
-
-
-AmuletInfo = namedtuple('AmuletInfo', ['id', 'owner', 'score', 'title', 'amulet', 'offsetUrl'])
 
 
 def getAmuletData(tokenid):
@@ -65,7 +67,31 @@ def getAmuletData(tokenid):
             info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
     amulet_cache[tokenid] = (time.time() + MYSTERIOUS_CACHE_DURATION if info.score == 0 else KNOWN_CACHE_DURATION, info)
     return info
-        
+
+
+@app.route('/cron')
+def cron():
+    global last_block_scanned
+    current_block = w3.eth.blockNumber
+    if not last_block_scanned:
+        last_block_scanned = current_block - 25
+    events = contract.events.AmuletRevealed.getLogs(
+        fromBlock=last_block_scanned + 1,
+        toBlock=current_block)
+    for event in events:
+        # Populate the cache
+        tokenid = event.args.tokenId
+        owner, blockRevealed, score = contract.functions.getData(tokenid).call()
+        info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
+        amulet_cache[tokenid] = info
+
+        # Poke OpenSea
+        result = requests.get("https://%s/api/v1/asset/%s/%d/?force_update=true" % (OPENSEA_DOMAIN, contract.address, event.args.tokenId))
+        result.raise_for_status()
+        print(result.text)
+    last_block_scanned = current_block
+    return "OK"
+
 
 @app.route('/token/0x<string:tokenhash>.json')
 def metadata(tokenhash):
