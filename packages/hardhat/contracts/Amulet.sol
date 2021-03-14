@@ -3,9 +3,8 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./IAmulet.sol";
 import "./ProxyRegistryWhitelist.sol";
@@ -17,7 +16,6 @@ import "./ProxyRegistryWhitelist.sol";
  */
 contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     using Address for address;
-    using Strings for uint256;
 
     // Mapping from token ID to token data
     // Values are packed in the form:
@@ -32,9 +30,6 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     // }
     mapping (uint256 => uint256) private _tokens;
 
-    // Mapping from token ID to approved address
-    mapping (uint256 => address) private _tokenApprovals;
-
     // Mapping from owner to operator approvals
     mapping (address => mapping (address => bool)) private _operatorApprovals;
 
@@ -43,8 +38,23 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     /**************************************************************************
      * Opensea-specific methods
      *************************************************************************/
+
     function contractURI() external pure returns (string memory) {
         return "https://at.amulet.garden/contract.json";
+    }
+
+    /**
+     * @dev See {IERC721Metadata-name}.
+     */
+    function name() public view virtual returns (string memory) {
+        return "Amulets";
+    }
+
+    /**
+     * @dev See {IERC721Metadata-symbol}.
+     */
+    function symbol() public view virtual returns (string memory) {
+        return "AMULET";
     }
 
     /**************************************************************************
@@ -55,119 +65,155 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
      * @dev See {IERC165-supportsInterface}.
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
-        return interfaceId == type(IERC721).interfaceId
-            || interfaceId == type(IERC721Metadata).interfaceId
+        return interfaceId == type(IERC1155).interfaceId
+            || interfaceId == type(IERC1155MetadataURI).interfaceId
             || super.supportsInterface(interfaceId);
-    }
-
-    /**
-     * @dev See {IERC721-balanceOf}.
-     */
-    function balanceOf(address) public view virtual override returns (uint256) {
-        revert("Not implemented");
-    }
-
-    /**
-     * @dev See {IERC721-ownerOf}.
-     */
-    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
-        address owner = address(uint160(_tokens[tokenId]));
-        require(owner != address(0), "ERC721: owner query for nonexistent token");
-        return owner;
-    }
-
-    /**
-     * @dev See {IERC721Metadata-name}.
-     */
-    function name() public view virtual override returns (string memory) {
-        return "Amulet";
-    }
-
-    /**
-     * @dev See {IERC721Metadata-symbol}.
-     */
-    function symbol() public view virtual override returns (string memory) {
-        return "AMULET";
     }
 
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-
-        return string(abi.encodePacked("https://at.amulet.garden/token/", tokenId.toHexString(), ".json"));
+    function uri(uint256 /*tokenId*/) public view virtual override returns (string memory) {
+        return "https://at.amulet.garden/token/{id}.json";
     }
 
     /**
-     * @dev See {IERC721-approve}.
+     * @dev See {IERC1155-balanceOf}.
+     *
+     * Requirements:
+     *
+     * - `account` cannot be the zero address.
      */
-    function approve(address to, uint256 tokenId) public virtual override {
-        address owner = ownerOf(tokenId);
-        require(to != owner, "ERC721: approval to current owner");
-
-        require(msg.sender== owner || isApprovedForAll(owner, msg.sender),
-            "ERC721: approve caller is not owner nor approved for all"
-        );
-
-        _approve(to, tokenId);
+    function balanceOf(address account, uint256 id) public view virtual override returns (uint256) {
+        require(account != address(0), "ERC1155: balance query for the zero address");
+        (address owner,,) = getData(id);
+        if(owner == account) {
+            return 1;
+        }
+        return 0;
     }
 
     /**
-     * @dev See {IERC721-getApproved}.
+     * @dev See {IERC1155-balanceOfBatch}.
+     *
+     * Requirements:
+     *
+     * - `accounts` and `ids` must have the same length.
      */
-    function getApproved(uint256 tokenId) public view virtual override returns (address) {
-        require(_exists(tokenId), "ERC721: approved query for nonexistent token");
+    function balanceOfBatch(
+        address[] memory accounts,
+        uint256[] memory ids
+    )
+        public
+        view
+        virtual
+        override
+        returns (uint256[] memory)
+    {
+        require(accounts.length == ids.length, "ERC1155: accounts and ids length mismatch");
 
-        return _tokenApprovals[tokenId];
+        uint256[] memory batchBalances = new uint256[](accounts.length);
+
+        for (uint256 i = 0; i < accounts.length; ++i) {
+            batchBalances[i] = balanceOf(accounts[i], ids[i]);
+        }
+
+        return batchBalances;
     }
 
     /**
-     * @dev See {IERC721-setApprovalForAll}.
+     * @dev See {IERC1155-setApprovalForAll}.
      */
     function setApprovalForAll(address operator, bool approved) public virtual override {
-        require(operator != msg.sender, "ERC721: approve to caller");
+        require(msg.sender != operator, "ERC1155: setting approval status for self");
 
         _operatorApprovals[msg.sender][operator] = approved;
         emit ApprovalForAll(msg.sender, operator, approved);
     }
 
     /**
-     * @dev See {IERC721-isApprovedForAll}.
+     * @dev See {IERC1155-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
-        return _operatorApprovals[owner][operator] || isProxyForOwner(owner, operator);
+    function isApprovedForAll(address account, address operator) public view virtual override returns (bool) {
+        return _operatorApprovals[account][operator] || isProxyForOwner(account, operator);
     }
 
     /**
-     * @dev See {IERC721-transferFrom}.
+     * @dev See {IERC1155-safeTransferFrom}.
      */
-    function transferFrom(address from, address to, uint256 tokenId) public virtual override {
-        //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: transfer caller is not owner nor approved");
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    )
+        public
+        virtual
+        override
+    {
+        require(to != address(0), "ERC1155: transfer to the zero address");
+        require(
+            from == msg.sender || isApprovedForAll(from, msg.sender),
+            "ERC1155: caller is not owner nor approved"
+        );
 
-        _transfer(from, to, tokenId);
+        (address oldOwner, uint64 blockRevealed, uint32 score) = getData(id);
+        require(amount == 1 && oldOwner == from, "ERC1155: Insufficient balance for transfer");
+        setData(id, to, blockRevealed, score);
+
+        emit TransferSingle(msg.sender, from, to, id, amount);
+
+        _doSafeTransferAcceptanceCheck(msg.sender, from, to, id, amount, data);
     }
 
     /**
-     * @dev See {IERC721-safeTransferFrom}.
+     * @dev See {IERC1155-safeBatchTransferFrom}.
      */
-    function safeTransferFrom(address from, address to, uint256 tokenId) public virtual override {
-        safeTransferFrom(from, to, tokenId, "");
-    }
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    )
+        public
+        virtual
+        override
+    {
+        require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+        require(to != address(0), "ERC1155: transfer to the zero address");
+        require(
+            from == msg.sender || isApprovedForAll(from, msg.sender),
+            "ERC1155: transfer caller is not owner nor approved"
+        );
 
-    /**
-     * @dev See {IERC721-safeTransferFrom}.
-     */
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory _data) public virtual override {
-        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: transfer caller is not owner nor approved");
-        _safeTransfer(from, to, tokenId, _data);
+        for (uint256 i = 0; i < ids.length; ++i) {
+            uint256 id = ids[i];
+            uint256 amount = amounts[i];
+
+            (address oldOwner, uint64 blockRevealed, uint32 score) = getData(id);
+            require(amount == 1 && oldOwner == from, "ERC1155: insufficient balance for transfer");
+            setData(id, to, blockRevealed, score);
+        }
+
+        emit TransferBatch(msg.sender, from, to, ids, amounts);
+
+        _doSafeBatchTransferAcceptanceCheck(msg.sender, from, to, ids, amounts, data);
     }
-    
 
     /**************************************************************************
      * Amulet-specific methods
      *************************************************************************/
+
+    /**
+     * @dev Returns the owner of the token with id `id`.
+     */
+    function ownerOf(uint256 id) external override view returns(address) {
+        (address owner,,) = getData(id);
+        return owner;
+    }
+
 
     /**
      * @dev Returns the score of an amulet.
@@ -214,7 +260,7 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
      * @param tokenId The tokenId, which is the sha256 hash of the text of the amulet.
      */
     function mint(address owner, uint256 tokenId) external override {
-        _safeMint(owner, tokenId);
+        _mint(owner, tokenId);
     }
 
     /**
@@ -259,158 +305,90 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
      *************************************************************************/
 
     /**
-     * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
-     * are aware of the ERC721 protocol to prevent tokens from being forever locked.
+     * @dev Creates a token of token type `id`, and assigns it to `account`.
      *
-     * `_data` is additional data, it has no specified format and it is sent in call to `to`.
-     *
-     * This internal function is equivalent to {safeTransferFrom}, and can be used to e.g.
-     * implement alternative mechanisms to perform token transfer, such as signature-based.
+     * Emits a {TransferSingle} event.
      *
      * Requirements:
      *
-     * - `from` cannot be the zero address.
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must exist and be owned by `from`.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
-     *
-     * Emits a {Transfer} event.
+     * - `account` cannot be the zero address.
+     * - If `account` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
+     * acceptance magic value.
      */
-    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory _data) internal virtual {
-        _transfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
+    function _mint(address to, uint256 id) internal virtual {
+        require(to != address(0), "ERC1155: mint to the zero address");
+
+        _tokens[id] = uint256(uint160(to));
+        emit TransferSingle(msg.sender, address(0), to, id, 1);
+
+        _doSafeTransferAcceptanceCheck(msg.sender, address(0), to, id, 1, "");
     }
 
     /**
-     * @dev Returns whether `tokenId` exists.
-     *
-     * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
-     *
-     * Tokens start existing when they are minted (`_mint`),
-     * and stop existing when they are burned (`_burn`).
-     */
-    function _exists(uint256 tokenId) internal view virtual returns (bool) {
-        return _tokens[tokenId] & 0x00ffffffffffffffffffffffffffffffffffffffff != 0;
-    }
-
-    /**
-     * @dev Returns whether `spender` is allowed to manage `tokenId`.
+     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_mint}.
      *
      * Requirements:
      *
-     * - `tokenId` must exist.
+     * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
+     * acceptance magic value.
      */
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        require(_exists(tokenId), "ERC721: operator query for nonexistent token");
-        address owner = ownerOf(tokenId);
-        return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
+    function _mintBatch(address to, uint256[] memory ids) internal virtual {
+        require(to != address(0), "ERC1155: mint to the zero address");
+
+        uint256[] memory amounts = new uint256[](ids.length);
+        for (uint i = 0; i < ids.length; i++) {
+            _tokens[ids[i]] = uint256(uint160(to));
+            amounts[i] = 1;
+        }
+
+        emit TransferBatch(msg.sender, address(0), to, ids, amounts);
+
+        _doSafeBatchTransferAcceptanceCheck(msg.sender, address(0), to, ids, amounts, "");
     }
 
-    /**
-     * @dev Safely mints `tokenId` and transfers it to `to`.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must not exist.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
-     *
-     * Emits a {Transfer} event.
-     */
-    function _safeMint(address to, uint256 tokenId) internal virtual {
-        _safeMint(to, tokenId, "");
-    }
-
-    /**
-     * @dev Same as {xref-ERC721-_safeMint-address-uint256-}[`_safeMint`], with an additional `data` parameter which is
-     * forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
-     */
-    function _safeMint(address to, uint256 tokenId, bytes memory _data) internal virtual {
-        _mint(to, tokenId);
-        require(_checkOnERC721Received(address(0), to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
-    }
-
-    /**
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
-     * WARNING: Usage of this method is discouraged, use {_safeMint} whenever possible
-     *
-     * Requirements:
-     *
-     * - `tokenId` must not exist.
-     * - `to` cannot be the zero address.
-     *
-     * Emits a {Transfer} event.
-     */
-    function _mint(address to, uint256 tokenId) internal virtual {
-        require(to != address(0), "ERC721: mint to the zero address");
-
-        require(_tokens[tokenId] == 0, "ERC721: token already minted");
-        _tokens[tokenId] = uint256(uint160(to));
-
-        emit Transfer(address(0), to, tokenId);
-    }
-
-    /**
-     * @dev Transfers `tokenId` from `from` to `to`.
-     *  As opposed to {transferFrom}, this imposes no restrictions on msg.sender.
-     *
-     * Requirements:
-     *
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must be owned by `from`.
-     *
-     * Emits a {Transfer} event.
-     */
-    function _transfer(address from, address to, uint256 tokenId) internal virtual {
-        require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
-        require(to != address(0), "ERC721: transfer to the zero address");
-
-        // Clear approvals from the previous owner
-        _approve(address(0), tokenId);
-
-        _tokens[tokenId] = (_tokens[tokenId] & 0xffffffffffffffffffffffff0000000000000000000000000000000000000000) | uint160(to);
-
-        emit Transfer(from, to, tokenId);
-    }
-
-    /**
-     * @dev Approve `to` to operate on `tokenId`
-     *
-     * Emits a {Approval} event.
-     */
-    function _approve(address to, uint256 tokenId) internal virtual {
-        _tokenApprovals[tokenId] = to;
-        emit Approval(ownerOf(tokenId), to, tokenId);
-    }
-
-    /**
-     * @dev Internal function to invoke {IERC721Receiver-onERC721Received} on a target address.
-     * The call is not executed if the target address is not a contract.
-     *
-     * @param from address representing the previous owner of the given token ID
-     * @param to target address that will receive the tokens
-     * @param tokenId uint256 ID of the token to be transferred
-     * @param _data bytes optional data to send along with the call
-     * @return bool whether the call correctly returned the expected magic value
-     */
-    function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory _data)
-        private returns (bool)
+    function _doSafeTransferAcceptanceCheck(
+        address operator,
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    )
+        private
     {
         if (to.isContract()) {
-            try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, _data) returns (bytes4 retval) {
-                return retval == IERC721Receiver(to).onERC721Received.selector;
-            } catch (bytes memory reason) {
-                if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
-                } else {
-                    // solhint-disable-next-line no-inline-assembly
-                    assembly {
-                        revert(add(32, reason), mload(reason))
-                    }
+            try IERC1155Receiver(to).onERC1155Received(operator, from, id, amount, data) returns (bytes4 response) {
+                if (response != IERC1155Receiver(to).onERC1155Received.selector) {
+                    revert("ERC1155: ERC1155Receiver rejected tokens");
                 }
+            } catch Error(string memory reason) {
+                revert(reason);
+            } catch {
+                revert("ERC1155: transfer to non ERC1155Receiver implementer");
             }
-        } else {
-            return true;
+        }
+    }
+
+    function _doSafeBatchTransferAcceptanceCheck(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    )
+        private
+    {
+        if (to.isContract()) {
+            try IERC1155Receiver(to).onERC1155BatchReceived(operator, from, ids, amounts, data) returns (bytes4 response) {
+                if (response != IERC1155Receiver(to).onERC1155BatchReceived.selector) {
+                    revert("ERC1155: ERC1155Receiver rejected tokens");
+                }
+            } catch Error(string memory reason) {
+                revert(reason);
+            } catch {
+                revert("ERC1155: transfer to non ERC1155Receiver implementer");
+            }
         }
     }
 }

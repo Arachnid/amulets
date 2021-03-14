@@ -2,11 +2,16 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol";
 
-interface IAmulet is IERC721, IERC721Metadata {
+interface IAmulet is IERC1155, IERC1155MetadataURI {
     event AmuletRevealed(uint256 indexed tokenId, address revealedBy, string title, string amulet, string offsetUrl);
+
+    /**
+     * @dev Returns the owner of the token with id `id`.
+     */
+    function ownerOf(uint256 id) external view returns(address);
 
     /**
      * @dev Returns the score of an amulet.
