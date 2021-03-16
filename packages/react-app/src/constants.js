@@ -1,11 +1,8 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
-
-//MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
+export const INFURA_ID = "6f00acf9331b46c482e81341d0e81e99";
 
 //BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77"
+export const BLOCKNATIVE_DAPPID = "210d4438-1ae0-4f42-ab0a-b9748ef6125b"
 
 
 // EXTERNAL CONTRACTS

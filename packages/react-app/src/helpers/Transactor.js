@@ -9,7 +9,7 @@ import Notify from "bnc-notify";
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
 
-export default function Transactor(provider, gasPrice, etherscan) {
+export default function Transactor(provider, etherscan) {
   if (typeof provider !== "undefined") {
     // eslint-disable-next-line consistent-return
     return async tx => {
@@ -43,12 +43,6 @@ export default function Transactor(provider, gasPrice, etherscan) {
           console.log("AWAITING TX", tx);
           result = await tx;
         } else {
-          if (!tx.gasPrice) {
-            tx.gasPrice = gasPrice || parseUnits("4.1", "gwei");
-          }
-          if (!tx.gasLimit) {
-            tx.gasLimit = hexlify(120000);
-          }
           console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);
         }
