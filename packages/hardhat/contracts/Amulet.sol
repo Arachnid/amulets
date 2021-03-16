@@ -228,8 +228,8 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
      */
     function getScore(string calldata amulet) public override pure returns(uint32) {
         uint256 hash = uint256(sha256(bytes(amulet)));
-        uint32 maxlen = 0;
-        uint32 len = 0;
+        uint maxlen = 0;
+        uint len = 0;
         for(;hash > 0; hash >>= 4) {
             if(hash & 0xF == 8) {
                 len += 1;
@@ -240,7 +240,7 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
                 len = 0;
             }
         }
-        return maxlen;        
+        return uint32(maxlen);        
     }
 
     /**

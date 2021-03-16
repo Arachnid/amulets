@@ -24,9 +24,11 @@ describe("Amulet", function() {
 
   it("should mint amulets", async () => {
     const id = getTokenId(AMULET_1);
-    await expect(contract.mint(accounts[0].address, id))
-      .to.emit(contract, "TransferSingle")
+    const tx = contract.mint(accounts[0].address, id);
+    await expect(tx).to.emit(contract, "TransferSingle")
       .withArgs(accounts[0].address, '0x0000000000000000000000000000000000000000', accounts[0].address, id.toString('hex'), 1);
+    const receipt = await (await tx).wait();
+    console.log(`Mint: ${receipt.gasUsed} gas`);
 
     expect(await contract.isRevealed(id)).to.equal(false);
     const data = await contract.getData(id);
@@ -43,9 +45,11 @@ describe("Amulet", function() {
   
     const title = "common amulets, 3 of 3";
     const offset = "example.com";
-    await expect(contract.reveal(title, AMULET_1, offset))
-      .to.emit(contract, 'AmuletRevealed')
+    const tx = contract.reveal(title, AMULET_1, offset);
+    await expect(tx).to.emit(contract, 'AmuletRevealed')
       .withArgs(id.toString('hex'), accounts[0].address, title, AMULET_1, offset);
+    const receipt = await (await tx).wait();
+    console.log(`Reveal: ${receipt.gasUsed} gas`);
 
     expect(await contract.isRevealed(id)).to.equal(true);
     const data = await contract.getData(id);
