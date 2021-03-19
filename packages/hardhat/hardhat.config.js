@@ -42,6 +42,10 @@ module.exports = {
   networks: {
     test: {
       url: "http://localhost:8545/"
+    },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/6f00acf9331b46c482e81341d0e81e99",
+      accounts: [process.env["PRIVATE_KEY"]],
     }
   },
   solidity: {

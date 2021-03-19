@@ -74,7 +74,7 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     }
 
     /**
-     * @dev See {IERC721Metadata-tokenURI}.
+     * @dev See {IERC1155Metadata-uri}.
      */
     function uri(uint256 /*tokenId*/) public view virtual override returns (string memory) {
         return "https://at.amulet.garden/token/{id}.json";

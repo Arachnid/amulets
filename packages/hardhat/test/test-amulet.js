@@ -4,6 +4,10 @@ const { ethers } = require("hardhat");
 AMULET_1 = "DON'T WORRY.";
 AMULET_2 = "THE REAL AMULET IS THE FRIENDS WE MADE ALONG THE WAY*";
 
+function getTokenId(a) {
+  return ethers.utils.keccak256(Buffer.from(a));
+}
+
 PREMINE_MINTS = [
   {tokenId: getTokenId("If you can't write poems,\nwrite me"), owner:"0xEC6d36A487d85CF562B7b8464CE8dc60637362AC"},
   {tokenId: getTokenId("IN THE SPRING MY LUNGS\nSTILL SOMEHOW EXPAND."), owner: "0x2D1F6D2cB1D24D89b195Eaf8B8bFEc1096d7c0b9"}
@@ -14,10 +18,6 @@ PREMINE_REVEALS = [
   {title: "Amulet 2", amulet: "THIS AMULET\nAT ANY PRICE\nFELT LIKE THE TRUTH", offsetURL: "https://example.com/", owner: "0x10ec976C862a0e48c932Fb53B5C542B5CBb13cF1"}
 ];
 
-
-function getTokenId(a) {
-  return ethers.utils.keccak256(Buffer.from(a));
-}
 
 describe("Amulet", function() {
   let accounts;
