@@ -33,7 +33,14 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     // Mapping from owner to operator approvals
     mapping (address => mapping (address => bool)) private _operatorApprovals;
 
-    constructor (address proxyRegistryAddress) ProxyRegistryWhitelist(proxyRegistryAddress) { }
+    constructor (address proxyRegistryAddress, uint256[] memory premineIDs, uint256[] memory premineValues) ProxyRegistryWhitelist(proxyRegistryAddress) {
+        // Mint 'premined' token IDs.
+        require(premineIDs.length == premineValues.length);
+        for(uint i = 0; i < premineIDs.length; i++) {
+            _tokens[premineIDs[i]] = premineValues[i];
+            emit TransferSingle(msg.sender, address(0), address(uint160(premineValues[i])), premineIDs[i], 1);
+        }
+    }
 
     /**************************************************************************
      * Opensea-specific methods

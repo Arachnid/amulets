@@ -3,6 +3,7 @@ const { ethers } = require("hardhat");
 
 AMULET_1 = "DON'T WORRY.";
 AMULET_2 = "THE REAL AMULET IS THE FRIENDS WE MADE ALONG THE WAY*";
+AMULET_3 = "this amulet is a simple token which proves my love's truth";
 
 function getTokenId(a) {
   return ethers.utils.keccak256(Buffer.from(a));
@@ -18,8 +19,16 @@ describe("Amulet", function() {
   
   beforeEach(async () => {
     const Contract = await ethers.getContractFactory("Amulet");
-    contract = await Contract.deploy('0x0000000000000000000000000000000000000000');
+    contract = await Contract.deploy('0x0000000000000000000000000000000000000000', [getTokenId(AMULET_3)], [accounts[0].address]);
     await contract.deployed();
+  });
+
+  it("should mint premined tokens", async () => {
+    const id = getTokenId(AMULET_3);
+    const data = await contract.getData(id);
+    expect(data[0]).to.equal(accounts[0].address);
+    expect(data[1].toNumber()).to.equal(0);
+    expect(data[2]).to.equal(0);
   });
 
   it("should mint amulets", async () => {
