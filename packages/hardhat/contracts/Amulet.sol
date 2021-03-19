@@ -280,10 +280,15 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
         require(bytes(amulet).length <= 64, "Amulet: Too long");
         uint256 tokenId = uint256(keccak256(bytes(amulet)));
         (address owner, uint64 blockRevealed, uint32 score) = getData(tokenId);
-
+        require(
+            owner == address(0) || owner == msg.sender || isApprovedForAll(owner, msg.sender),
+            "Amulet: reveal caller is not owner nor approved"
+        );
         require(blockRevealed == 0, "Amulet: Already revealed");
+
         score = getScore(amulet);
         require(score >= 4, "Amulet: Score too low");
+
         if(owner == address(0)) {
             owner = msg.sender;
         }

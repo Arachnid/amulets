@@ -67,6 +67,16 @@ describe("Amulet", function() {
     expect(data[2]).to.equal(4); // Score
   });
 
+  it("should not allow non-owners to reveal amulets", async () => {
+    const id = getTokenId(AMULET_1);
+    await (await contract.mint(accounts[0].address, id)).wait();
+
+    const title = "common amulets, 3 of 3";
+    const offset = "example.com";
+    const contract1 = contract.connect(accounts[1]);
+    await expect(contract1.reveal(title, AMULET_1, offset)).to.be.reverted;
+  });
+
   it("should permit a reveal without a mint", async () => {
     const id = getTokenId(AMULET_2);
     await expect(contract.reveal("Test", AMULET_2, "https://example.com/"))
