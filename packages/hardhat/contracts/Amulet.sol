@@ -340,6 +340,7 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
 
         uint256[] memory amounts = new uint256[](ids.length);
         for (uint i = 0; i < ids.length; i++) {
+            require(_tokens[ids[i]] == 0, "ERC1155: mint of existing token");
             _tokens[ids[i]] = uint256(uint160(to));
             amounts[i] = 1;
         }
