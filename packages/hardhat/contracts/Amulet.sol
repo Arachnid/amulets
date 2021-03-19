@@ -339,29 +339,6 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
         _doSafeTransferAcceptanceCheck(msg.sender, address(0), to, id, 1, "");
     }
 
-    /**
-     * @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_mint}.
-     *
-     * Requirements:
-     *
-     * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
-     * acceptance magic value.
-     */
-    function _mintBatch(address to, uint256[] memory ids) internal virtual {
-        require(to != address(0), "ERC1155: mint to the zero address");
-
-        uint256[] memory amounts = new uint256[](ids.length);
-        for (uint i = 0; i < ids.length; i++) {
-            require(_tokens[ids[i]] == 0, "ERC1155: mint of existing token");
-            _tokens[ids[i]] = uint256(uint160(to));
-            amounts[i] = 1;
-        }
-
-        emit TransferBatch(msg.sender, address(0), to, ids, amounts);
-
-        _doSafeBatchTransferAcceptanceCheck(msg.sender, address(0), to, ids, amounts, "");
-    }
-
     function _doSafeTransferAcceptanceCheck(
         address operator,
         address from,
