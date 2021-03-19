@@ -14,12 +14,12 @@ from web3.auto import w3
 
 
 RARITIES = {
-    4: 'Common',
-    5: 'Uncommon',
-    6: 'Rare',
-    7: 'Epic',
-    8: 'Legendary',
-    9: 'Mythic'
+    4: 'common',
+    5: 'uncommon',
+    6: 'rare',
+    7: 'epic',
+    8: 'legendary',
+    9: 'mythic'
 }
 
 CACHE_SIZE = 65536
@@ -93,7 +93,7 @@ def cron():
     return "OK"
 
 
-@app.route('/token/0x<string:tokenhash>.json')
+@app.route('/token/<string:tokenhash>.json')
 def metadata(tokenhash):
     tokenid = int(tokenhash, 16)
     if tokenid > (1 << 256) - 1:
@@ -112,28 +112,37 @@ def make_color(hue, sat, val):
     return '#%.2x%.2x%.2x' % tuple(int(c * 255) for c in color)
 
 
-@app.route('/token/0x<string:tokenhash>.svg')
+@app.route('/token/<string:tokenhash>.svg')
 def tokenimage(tokenhash):
     tokenid = int(tokenhash, 16)
     if tokenid > (1 << 256) - 1:
         abort(404)
     amulet = getAmuletData(tokenid)
-    h = hexlify(sha256(amulet.amulet.encode('utf-8')).digest())
-    colorseed = int(tokenhash[:2], 16)
-    args = {
-        'info': amulet,
-        'hash': h,
-        'text': amulet.amulet.translate(visible_whitespace),
-        'lightcolor': make_color(colorseed, 128, 128),
-        'darkcolor': make_color(colorseed, 128, 192),
-    }
-    return render_template('amulet.svg', **args)
+    if amulet.amulet:
+        h = hexlify(sha256(amulet.amulet.encode('utf-8')).digest())
+        colorseed = int(tokenhash[:2], 16)
+        args = {
+            'info': amulet,
+            'hash': h,
+            'text': amulet.amulet.translate(visible_whitespace),
+            'lightcolor': make_color(colorseed, 128, 128),
+            'darkcolor': make_color(colorseed, 128, 192),
+        }
+        return render_template('amulet.svg', **args)
+    else:
+        return render_template('mysterious_amulet.svg')
 
 
 def mysteriousAmuletResponse(tokenhash, info):
     return jsonify({
         'name': 'A mysterious amulet',
         'description': "A mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
+        'image': "https://at.amulet.garden/token/%s.svg" % tokenhash,
+        'attributes': [
+            {
+                'value': 'Mysterious',
+            },
+        ],
     })
 
 
@@ -147,20 +156,22 @@ def amuletResponse(tokenhash, info):
         'name': info.title,
         'description': render_template('amulet.md', **args),
         'poem': info.amulet,
-        'image': "https://at.amulet.garden/token/0x%s.svg" % tokenhash,
+        'image': "https://at.amulet.garden/token/%s.svg" % tokenhash,
         'attributes': [
             {
                 'trait_type': 'Score',
                 'value': info.score,
             }, {
                 'trait_type': 'Rarity',
-                'value': args['rarity']
+                'value': args['rarity'],
             }, {
                 'trait_type': 'Length',
                 'display_type': 'number',
-                'value': args['length']
-            }
-        ]
+                'value': args['length'],
+            }, {
+                'value': 'Revealed',
+            },
+        ],
     })
 
 
