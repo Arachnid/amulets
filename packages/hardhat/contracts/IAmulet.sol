@@ -8,6 +8,24 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol
 interface IAmulet is IERC1155, IERC1155MetadataURI {
     event AmuletRevealed(uint256 indexed tokenId, address revealedBy, string title, string amulet, string offsetUrl);
 
+    struct MintData {
+        address owner;
+        uint256 tokenId;
+    }
+
+    struct RevealData {
+        string title;
+        string amulet;
+        string offsetURL;
+    }
+
+    struct MintAndRevealData {
+        string title;
+        string amulet;
+        string offsetURL;
+        address owner;
+    }
+
     /**
      * @dev Returns the owner of the token with id `id`.
      */
@@ -35,19 +53,40 @@ interface IAmulet is IERC1155, IERC1155MetadataURI {
 
     /**
      * @dev Mint a new amulet.
-     * @param owner The owner for the new amulet.
-     * @param tokenId The tokenId, which is the sha256 hash of the text of the amulet.
+     * @param data The ID and owner for the new token.
      */
-    function mint(address owner, uint256 tokenId) external;
+    function mint(MintData calldata data) external;
+
+    /**
+     * @dev Mint new amulets.
+     * @param data The IDs and amulets for the new tokens.
+     */
+    function mintAll(MintData[] calldata data) external;
 
     /**
      * @dev Reveals an amulet.
-     * @param title A title for the amulet.
-     * @param amulet The text of the amulet. An NFT with ID equal to the sha256 of the text must already exist.
-     * @param offsetURL The URL of a certification of a purchased carbon offset of at least 1T.
+     * @param data The title, text, and offset URL for the amulet.
      */
-    function reveal(string calldata title, string calldata amulet, string calldata offsetURL) external;
-    
+    function reveal(RevealData calldata data) external;
+
+    /**
+     * @dev Reveals multiple amulets
+     * @param data The titles, texts, and offset URLs for the amulets.
+     */
+    function revealAll(RevealData[] calldata data) external;
+
+    /**
+     * @dev Mint and reveal an amulet.
+     * @param data The title, text, offset URL, and owner for the new amulet.
+     */
+    function mintAndReveal(MintAndRevealData calldata data) external;
+
+    /**
+     * @dev Mint and reveal amulets.
+     * @param data The titles, texts, offset URLs, and owners for the new amulets.
+     */
+    function mintAndRevealAll(MintAndRevealData[] calldata data) external;
+
     /**
      * @dev Returns the Amulet's owner address, the block it was revealed in, and its score.
      */

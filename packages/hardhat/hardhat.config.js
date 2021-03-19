@@ -12,7 +12,7 @@ AMULETS = ["DON'T WORRY.", "THE REAL AMULET IS THE FRIENDS WE MADE ALONG THE WAY
 task("deploy", "Deploy the contracts").setAction(async () => {
     const accounts = await ethers.getSigners();
     const Amulet = await ethers.getContractFactory("Amulet");
-    const contract = await Amulet.deploy("0x0000000000000000000000000000000000000000");
+    const contract = await Amulet.deploy("0x0000000000000000000000000000000000000000", [], []);
     console.log("Amulet deployed to:", contract.address);
     fs.writeFileSync(`artifacts/Amulet.address`, contract.address);
 });

@@ -33,13 +33,9 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     // Mapping from owner to operator approvals
     mapping (address => mapping (address => bool)) private _operatorApprovals;
 
-    constructor (address proxyRegistryAddress, uint256[] memory premineIDs, uint256[] memory premineValues) ProxyRegistryWhitelist(proxyRegistryAddress) {
-        // Mint 'premined' token IDs.
-        require(premineIDs.length == premineValues.length);
-        for(uint i = 0; i < premineIDs.length; i++) {
-            _tokens[premineIDs[i]] = premineValues[i];
-            emit TransferSingle(msg.sender, address(0), address(uint160(premineValues[i])), premineIDs[i], 1);
-        }
+    constructor (address proxyRegistryAddress, MintData[] memory premineMints, MintAndRevealData[] memory premineReveals) ProxyRegistryWhitelist(proxyRegistryAddress) {
+        mintAll(premineMints);
+        mintAndRevealAll(premineReveals);
     }
 
     /**************************************************************************
@@ -233,7 +229,7 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
      *      9: mythic
      *      10+: beyond mythic
      */
-    function getScore(string calldata amulet) public override pure returns(uint32) {
+    function getScore(string memory amulet) public override pure returns(uint32) {
         uint256 hash = uint256(sha256(bytes(amulet)));
         uint maxlen = 0;
         uint len = 0;
@@ -260,41 +256,88 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
         require(owner != address(0), "ERC721: isRevealed query for nonexistent token");
         return blockRevealed > 0;
     }
-    
+
     /**
      * @dev Mint a new amulet.
-     * @param owner The owner for the new amulet.
-     * @param tokenId The tokenId, which is the sha256 hash of the text of the amulet.
+     * @param data The ID and owner for the new token.
      */
-    function mint(address owner, uint256 tokenId) external override {
-        _mint(owner, tokenId);
+    function mint(MintData memory data) public override {
+        require(data.owner != address(0), "ERC1155: mint to the zero address");
+        require(_tokens[data.tokenId] == 0, "ERC1155: mint of existing token");
+
+        _tokens[data.tokenId] = uint256(uint160(data.owner));
+        emit TransferSingle(msg.sender, address(0), data.owner, data.tokenId, 1);
+
+        _doSafeTransferAcceptanceCheck(msg.sender, address(0), data.owner, data.tokenId, 1, "");
+    }
+
+    /**
+     * @dev Mint new amulets.
+     * @param data The IDs and amulets for the new tokens.
+     */
+    function mintAll(MintData[] memory data) public override {
+        for(uint i = 0; i < data.length; i++) {
+            mint(data[i]);
+        }
     }
 
     /**
      * @dev Reveals an amulet.
-     * @param title A title for the amulet.
-     * @param amulet The text of the amulet. An NFT with ID equal to the sha256 of the text must already exist.
-     * @param offsetURL The URL of a certification of a purchased carbon offset of at least 1T.
+     * @param data The title, text, and offset URL for the amulet.
      */
-    function reveal(string calldata title, string calldata amulet, string calldata offsetURL) external override {
-        require(bytes(amulet).length <= 64, "Amulet: Too long");
-        uint256 tokenId = uint256(keccak256(bytes(amulet)));
+    function reveal(RevealData calldata data) public override {
+        require(bytes(data.amulet).length <= 64, "Amulet: Too long");
+        uint256 tokenId = uint256(keccak256(bytes(data.amulet)));
         (address owner, uint64 blockRevealed, uint32 score) = getData(tokenId);
         require(
-            owner == address(0) || owner == msg.sender || isApprovedForAll(owner, msg.sender),
+            owner == msg.sender || isApprovedForAll(owner, msg.sender),
             "Amulet: reveal caller is not owner nor approved"
         );
         require(blockRevealed == 0, "Amulet: Already revealed");
 
-        score = getScore(amulet);
+        score = getScore(data.amulet);
         require(score >= 4, "Amulet: Score too low");
 
-        if(owner == address(0)) {
-            owner = msg.sender;
-        }
-
         setData(tokenId, owner, uint64(block.number), score);
-        emit AmuletRevealed(tokenId, msg.sender, title, amulet, offsetURL);
+        emit AmuletRevealed(tokenId, msg.sender, data.title, data.amulet, data.offsetURL);
+    }
+
+    /**
+     * @dev Reveals multiple amulets
+     * @param data The titles, texts, and offset URLs for the amulets.
+     */
+    function revealAll(RevealData[] calldata data) external override {
+        for(uint i = 0; i < data.length; i++) {
+            reveal(data[i]);
+        }
+    }
+
+    /**
+     * @dev Mint and reveal an amulet.
+     * @param data The title, text, offset URL, and owner for the new amulet.
+     */
+    function mintAndReveal(MintAndRevealData memory data) public override {
+        require(bytes(data.amulet).length <= 64, "Amulet: Too long");
+        uint256 tokenId = uint256(keccak256(bytes(data.amulet)));
+        (address owner,,) = getData(tokenId);
+        require(owner == address(0), "Amulet: mintAndReveal amulet already exists");
+
+        uint32 score = getScore(data.amulet);
+        require(score >= 4, "Amulet: Score too low");
+
+        setData(tokenId, data.owner, uint64(block.number), score);
+        emit TransferSingle(msg.sender, address(0), data.owner, tokenId, 1);
+        emit AmuletRevealed(tokenId, msg.sender, data.title, data.amulet, data.offsetURL);
+    }
+
+    /**
+     * @dev Mint and reveal amulets.
+     * @param data The titles, texts, offset URLs, and owners for the new amulets.
+     */
+    function mintAndRevealAll(MintAndRevealData[] memory data) public override {
+        for(uint i = 0; i < data.length; i++) {
+            mintAndReveal(data[i]);
+        }
     }
 
     /**
@@ -317,27 +360,6 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
     /**************************************************************************
      * Internal/private methods
      *************************************************************************/
-
-    /**
-     * @dev Creates a token of token type `id`, and assigns it to `account`.
-     *
-     * Emits a {TransferSingle} event.
-     *
-     * Requirements:
-     *
-     * - `account` cannot be the zero address.
-     * - If `account` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
-     * acceptance magic value.
-     */
-    function _mint(address to, uint256 id) internal virtual {
-        require(to != address(0), "ERC1155: mint to the zero address");
-        require(_tokens[id] == 0, "ERC1155: mint of existing token");
-
-        _tokens[id] = uint256(uint160(to));
-        emit TransferSingle(msg.sender, address(0), to, id, 1);
-
-        _doSafeTransferAcceptanceCheck(msg.sender, address(0), to, id, 1, "");
-    }
 
     function _doSafeTransferAcceptanceCheck(
         address operator,
