@@ -2,3 +2,5 @@ Flask==1.1.2
 web3==5.17.0
 pylru==1.2.0
 requests==2.25.1
+Pillow==8.1.2
+uniseg==0.7.1

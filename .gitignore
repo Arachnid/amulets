@@ -6,3 +6,4 @@ packages/hardhat/artifacts
 packages/react-app/src/contracts
 packages/server/env
 yarn-error.log
+__pycache__
