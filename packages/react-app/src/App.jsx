@@ -66,7 +66,7 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
+  const userProvider = injectedProvider || localProvider;
   const address = useUserAddress(userProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
 

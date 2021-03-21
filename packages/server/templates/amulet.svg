@@ -1,20 +1,14 @@
 <svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <style>
         .poem {
-            font: 70px monospace;
-            dominant-baseline: middle;
-            text-anchor: middle;
-        }
-        .onelinepoem {
-            font: 70px monospace;
-            text-anchor: middle;
-            dominant-baseline: middle;
+            font: {{font_size}}pt "Noto Sans", Helvetica, sans-serif;
+            dominant-baseline: hanging;
         }
         .lighthex {
-            fill: {{lightcolor}};
+            fill: {{fg}};
         }
         .darkhex {
-            fill: {{darkcolor}};
+            fill: {{bg}};
         }
     </style>
     <defs>
@@ -28,7 +22,9 @@
             <use x="{{(loop.index0 % 8) * 80}}" y="{{(loop.index0 // 8) * 80}}" xlink:href="#icon" />
         {% endif %}
     {%- endfor %}
-    <text class="poem" x="{% for char in text %}{{(loop.index0 % 8) * 80 + 40}} {% endfor %}" y="{% for char in text %}{{(loop.index0 // 8) * 80 + 40}} {% endfor %}">
-        {{text}}
+    <text class="poem" x="{{(525 - w) / 2}}" y="{{(525 - h) / 2}}">
+        {% for line in text.split('\n') %}
+            <tspan x="{{(525 - w) / 2}}" dy="{% if loop.first %}0{% else %}1.1em{% endif %}">{{line}}</tspan>
+        {% endfor %}
     </text>
 </svg>
