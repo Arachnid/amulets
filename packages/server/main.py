@@ -113,7 +113,7 @@ def make_color(hue, sat, val):
     return '#%.2x%.2x%.2x' % tuple(int(c * 255) for c in color)
 
 
-@app.route('/token/<string:tokenhash>.svg')
+@app.route('/token/<string:tokenhash>.png')
 def tokenimage(tokenhash):
     tokenid = int(tokenhash, 16)
     if tokenid > (1 << 256) - 1:
@@ -121,7 +121,10 @@ def tokenimage(tokenhash):
     amulet = getAmuletData(tokenid)
     if amulet.amulet:
         img = imagegen.render(amulet.amulet)
-        return Response(img, 'image/svg')
+        buf = BytesIO()
+        img.save(buf, 'PNG')
+        buf.seek(0)
+        return send_file(buf, mimetype='image/png')
     else:
         return render_template('mysterious_amulet.svg')
 
@@ -149,7 +152,7 @@ def amuletResponse(tokenhash, info):
         'name': info.title,
         'description': render_template('amulet.md', **args),
         'poem': info.amulet,
-        'image': "https://at.amulet.garden/token/%s.svg" % tokenhash,
+        'image': "https://at.amulet.garden/token/%s.png" % tokenhash,
         'attributes': [
             {
                 'trait_type': 'Score',
