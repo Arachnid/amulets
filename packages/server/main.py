@@ -129,32 +129,43 @@ def tokenimage(tokenhash):
         return send_file('static/mysterious-amulet.png', mimetype='image/png')
 
 
+def has_antics(text):
+    # Multiple consecutive whitespace, whitespace at end of string,
+    # or whitespace other than space and newline
+    return re.search('\s\s|\s$|[^\S\n ]', text) is not None
+
+
 def amuletResponse(tokenhash, info):
     args = {
         'info': info,
         'length': len(info.amulet.encode('utf-8')),
         'rarity': RARITIES.get(info.score, "Beyond Mythic"),
     }
+    attributes = [
+        {
+            'trait_type': 'Score',
+            'value': info.score,
+        }, {
+            'trait_type': 'Rarity',
+            'value': args['rarity'],
+        }, {
+            'trait_type': 'Length',
+            'display_type': 'number',
+            'value': args['length'],
+        }, {
+            'value': 'Revealed',
+        },
+    ]
+    if has_antics(info.amulet):
+        attributes.append({
+            'trait_type': 'Antics'
+        })
     return jsonify({
         'name': info.title,
         'description': render_template('amulet.md', **args),
         'poem': info.amulet,
         'image': "https://at.amulet.garden/token/%s.png" % tokenhash,
-        'attributes': [
-            {
-                'trait_type': 'Score',
-                'value': info.score,
-            }, {
-                'trait_type': 'Rarity',
-                'value': args['rarity'],
-            }, {
-                'trait_type': 'Length',
-                'display_type': 'number',
-                'value': args['length'],
-            }, {
-                'value': 'Revealed',
-            },
-        ],
+        'attributes': attributes,
     })
 
 
