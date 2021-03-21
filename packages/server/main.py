@@ -126,20 +126,7 @@ def tokenimage(tokenhash):
         buf.seek(0)
         return send_file(buf, mimetype='image/png')
     else:
-        return render_template('mysterious_amulet.svg')
-
-
-def mysteriousAmuletResponse(tokenhash, info):
-    return jsonify({
-        'name': 'A mysterious amulet',
-        'description': "A mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
-        'image': "https://at.amulet.garden/token/%s.svg" % tokenhash,
-        'attributes': [
-            {
-                'value': 'Mysterious',
-            },
-        ],
-    })
+        return send_file('static/mysterious-amulet.png', mimetype='image/png')
 
 
 def amuletResponse(tokenhash, info):
