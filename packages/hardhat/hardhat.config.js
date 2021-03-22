@@ -45,7 +45,7 @@ module.exports = {
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/6f00acf9331b46c482e81341d0e81e99",
-      accounts: [process.env["PRIVATE_KEY"]],
+      accounts: process.env['PRIVATE_KEY'] && [process.env["PRIVATE_KEY"]],
     }
   },
   solidity: {
