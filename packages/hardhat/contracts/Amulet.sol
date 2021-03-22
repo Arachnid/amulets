@@ -320,7 +320,8 @@ contract Amulet is IAmulet, ERC165, ProxyRegistryWhitelist {
         require(bytes(data.amulet).length <= 64, "Amulet: Too long");
         uint256 tokenId = uint256(keccak256(bytes(data.amulet)));
         (address owner,,) = getData(tokenId);
-        require(owner == address(0), "Amulet: mintAndReveal amulet already exists");
+        require(owner == address(0), "ERC1155: mint of existing token");
+        require(data.owner != address(0), "ERC1155: mint to the zero address");
 
         uint32 score = getScore(data.amulet);
         require(score >= 4, "Amulet: Score too low");
