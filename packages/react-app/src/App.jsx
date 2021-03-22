@@ -41,10 +41,10 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['rinkeby']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true
+const DEBUG = false
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -67,7 +67,8 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = injectedProvider || localProvider;
-  const address = useUserAddress(userProvider);
+
+  const address = useUserAddress(injectedProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
 
   // You can warn the user if you would like them to be on a specific network
@@ -87,7 +88,7 @@ function App(props) {
   if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
+  const writeContracts = useContractLoader(injectedProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
   // keep track of a variable from the contract in the local React state:
@@ -149,7 +150,7 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
 
-        <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+        {/* <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">Create an Amulet</Link>
           </Menu.Item>
@@ -159,46 +160,13 @@ function App(props) {
           <Menu.Item key="/debugcontracts">
             <Link onClick={()=>{setRoute("/debugcontracts")}} to="/debugcontracts">Debug Contracts</Link>
           </Menu.Item>
-        </Menu>
+        </Menu> */}
 
         <Switch>
-          <Route path="/transfers">
-            <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
-              <List
-                bordered
-                dataSource={transferEvents}
-                renderItem={(item) => {
-                  return (
-                    <List.Item key={item[0]+"_"+item[1]+"_"+item.blockNumber+"_"+item[2].toNumber()}>
-                      <span style={{fontSize:16, marginRight:8}}>#{item[2].toNumber()}</span>
-                      <Address
-                          address={item[0]}
-                          ensProvider={mainnetProvider}
-                          fontSize={16}
-                      /> =>
-                      <Address
-                          address={item[1]}
-                          ensProvider={mainnetProvider}
-                          fontSize={16}
-                      />
-                    </List.Item>
-                  )
-                }}
-              />
-            </div>
-          </Route>
-          <Route path="/debugcontracts">
-              <Contract
-                name="Amulet"
-                signer={userProvider.getSigner()}
-                provider={localProvider}
-                address={address}
-                blockExplorer={blockExplorer}
-              />
-          </Route>
           <Route path="/">
             <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
-              <AmuletCreator readContracts={readContracts} writeContracts={writeContracts} />
+              {address && <AmuletCreator readContracts={readContracts} writeContracts={writeContracts} provider={userProvider} />}
+              {!address && <Typography.Text>Connect your wallet to mint an amulet</Typography.Text>}
             </div>
 
             {/* <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
@@ -267,6 +235,7 @@ function App(props) {
            loadWeb3Modal={loadWeb3Modal}
            logoutOfWeb3Modal={logoutOfWeb3Modal}
            blockExplorer={blockExplorer}
+           minimized={true}
          />
       </div>
     </div>

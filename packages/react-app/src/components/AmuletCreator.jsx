@@ -19,8 +19,8 @@ export default function AmuletCreator(props) {
                 <Steps.Step title="Done" />
             </Steps>
             {step === 0 && <AmuletFinder onFind={(amulet) => { setAmulet(amulet); setStep(1) }} />}
-            {step === 1 && <AmuletMinter readContracts={props.readContracts} writeContracts={props.writeContracts} amulet={amulet} onBack={onBack} onMint={() => setStep(2)} />}
-            {step === 2 && <AmuletRevealer readContracts={props.readContracts} writeContracts={props.writeContracts} amulet={amulet} onBack={onBack} onReveal={() => setStep(3)} />}
+            {step === 1 && <AmuletMinter readContracts={props.readContracts} writeContracts={props.writeContracts} provider={props.provider} amulet={amulet} onBack={onBack} onMint={() => setStep(2)} />}
+            {step === 2 && <AmuletRevealer readContracts={props.readContracts} writeContracts={props.writeContracts} provider={props.provider} amulet={amulet} onBack={onBack} onReveal={(amulet) => { setAmulet(amulet); setStep(3); }} />}
             {step === 3 && <AmuletDisplay amulet={amulet} onBack={onBack} />}
         </>
     );

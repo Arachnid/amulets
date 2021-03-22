@@ -10,9 +10,9 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export default function AmuletRevealer(props) {
     const Amulet = props.writeContracts.Amulet;
-    const userAddress = useUserAddress(Amulet.provider);
+    const userAddress = useUserAddress(props.provider);
     const amuletData = useContractReader(props.readContracts, "Amulet", "getData", [props.amulet.id]);
-    const tx = Transactor(Amulet.provider);
+    const tx = Transactor(props.provider);
     const [title, setTitle] = React.useState("");
     const [offset, setOffset] = React.useState("");
     // Listen for mint events on the Amulet contract. We don't actually have to use this, as triggering it will cause us to check
@@ -22,12 +22,12 @@ export default function AmuletRevealer(props) {
     React.useEffect(() => {
         if(amuletData && amuletData.blockRevealed != 0) {
             // Already revealed? Skip this step.
-            props.onReveal();
+            props.onReveal({title, offset, id: props.amulet.id, text: props.amulet.text, rarity: props.amulet.rarity});
         }
     });
 
     const reveal = () => {
-        tx(Amulet.reveal(title, props.amulet.text, offset));
+        tx(Amulet.reveal([title, props.amulet.text, offset]));
     };
 
     if(!amuletData) {

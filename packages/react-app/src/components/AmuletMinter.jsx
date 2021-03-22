@@ -10,11 +10,8 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export default function AmuletMinter(props) {
     const Amulet = props.writeContracts.Amulet;
-    const userAddress = useUserAddress(Amulet.provider);
+    const userAddress = useUserAddress(props.provider);
     const amuletData = useContractReader(props.readContracts, "Amulet", "getData", [props.amulet.id]);
-    // Listen for mint events on the Amulet contract. We don't actually have to use this, as triggering it will cause us to check
-    // for amulet ownership below and redirect if it's been minted.
-    const mintEvents = useEventListener(props.readContracts, "Amulet", "TransferSingle", undefined, undefined, {from: ZERO_ADDRESS});
 
     React.useEffect(() => {
         if(amuletData && amuletData.owner !== ZERO_ADDRESS) {
@@ -23,10 +20,10 @@ export default function AmuletMinter(props) {
         }
     })
 
-    const tx = Transactor(Amulet.provider);
+    const tx = Transactor(props.provider);
 
     const mint = () => {
-        tx(Amulet.mint(userAddress, props.amulet.id));
+        tx(Amulet.mint([userAddress, props.amulet.id]));
     };
     if(!amuletData) {
         return <Typography.Text>Checking amulet ownership...</Typography.Text>;
