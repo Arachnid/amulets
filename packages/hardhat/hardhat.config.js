@@ -2,6 +2,7 @@ const fs = require("fs");
 const { task } = require("hardhat/config");
 
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-etherscan");
 
 function getTokenId(a) {
   return ethers.utils.keccak256(Buffer.from(a));
@@ -43,6 +44,11 @@ module.exports = {
     test: {
       url: "http://localhost:8545/"
     },
+    mainnet: {
+      url: "https://mainnet.infura.io/v3/6f00acf9331b46c482e81341d0e81e99",
+      accounts: process.env['PRIVATE_KEY'] && [process.env["PRIVATE_KEY"]],
+      gasPrice: 100000000000
+    },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/6f00acf9331b46c482e81341d0e81e99",
       accounts: process.env['PRIVATE_KEY'] && [process.env["PRIVATE_KEY"]],
@@ -56,6 +62,9 @@ module.exports = {
         runs: 10000,
       }
     }
+  },
+  etherscan: {
+    apiKey: 'NFCYZHBU2Z9ESKNY6IJS6QK9QHH4ECI2GS'
   }
 };
 
