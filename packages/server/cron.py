@@ -5,7 +5,7 @@ from web3.auto import w3
 from utils import load_contract, AmuletInfo, RARITIES, amulet_cache
 
 
-OPENSEA_DOMAIN = "testnets-api.opensea.io"
+OPENSEA_DOMAIN = "api.opensea.io"
 
 
 contract = load_contract('Amulet')
@@ -44,4 +44,4 @@ def send_tweet(info):
     twitter_auth = tweepy.OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)
     twitter_auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)
     tweeter = tweepy.API(twitter_auth)
-    tweeter.update_status('%s\n\n - A %s amulet titled "%s" https://opensea.io/assets/%s/%d' % (info.amulet, RARITIES.get(info.score, "beyond epic").upper(), info.title, contract.address, info.id))
+    tweeter.update_status('%s\n\n - A %s amulet titled "%s" https://opensea.io/assets/%s/%d' % (info.amulet, RARITIES.get(info.score, "beyond mythic").upper(), info.title, contract.address, info.id))

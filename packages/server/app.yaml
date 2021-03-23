@@ -4,9 +4,15 @@ handlers:
  - url: /contract.json
    static_files: static/contract.json
    mime_type: application/json
-   upload: contract.json
- - url: /.*
+   upload: static/contract.json
+ - url: /cron|/token.*
    script: auto
+ - url: /
+   static_files: app/index.html
+   upload: app/index.html
+ - url: /(.*)
+   static_files: app/\1
+   upload: app/.*
 
 env_variables:
-  WEB3_PROVIDER_URI: https://rinkeby.infura.io/v3/6f00acf9331b46c482e81341d0e81e99
+  WEB3_PROVIDER_URI: https://mainnet.infura.io/v3/6f00acf9331b46c482e81341d0e81e99
