@@ -1,3 +1,4 @@
+from flask import abort, request
 import requests
 import time
 import tweepy
@@ -14,6 +15,9 @@ last_block_scanned = None
 
 
 def cron():
+    if not request.headers.get('X-Appengine-Cron'):
+        abort(403)
+
     global last_block_scanned
     current_block = w3.eth.blockNumber
     if not last_block_scanned:
