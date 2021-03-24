@@ -18,6 +18,7 @@ function scoreAmulet(text) {
 }
 
 const RARITIES = {
+    0: 'None',
     1: 'None',
     2: 'None',
     3: 'None',
@@ -29,11 +30,18 @@ const RARITIES = {
     9: 'Mythic'
 };
 
+function countUtf8Bytes(s){
+    var b = 0, i = 0, c
+    for(;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
+    return b
+}
+
 export default function AmuletFinder(props) {
     const [text, setText] = React.useState('');
     const score = scoreAmulet(text);
+    console.log({score});
     const id = ethers.utils.keccak256(Buffer.from(text));
-    const rarity = RARITIES[score] || 'Beyond Mythic';
+    const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
     return (
         <Form>
             <Form.Item label="Amulet">
@@ -43,7 +51,7 @@ export default function AmuletFinder(props) {
                 <Typography.Text>{rarity}</Typography.Text>
             </Form.Item>
             <Form.Item>
-                <Button type="primary" disabled={score < 4} onClick={() => props.onFind({text, score, id, rarity})}>Next</Button>
+                <Button type="primary" disabled={score < 4 || countUtf8Bytes(text) > 64} onClick={() => props.onFind({text, score, id, rarity})}>Next</Button>
             </Form.Item>
         </Form>
     );

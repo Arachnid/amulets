@@ -1,8 +1,9 @@
 import requests
+import time
 import tweepy
 from web3.auto import w3
 
-from utils import load_contract, AmuletInfo, RARITIES, amulet_cache
+from utils import load_contract, AmuletInfo, RARITIES, amulet_cache, KNOWN_CACHE_DURATION
 
 
 OPENSEA_DOMAIN = "api.opensea.io"
@@ -25,7 +26,7 @@ def cron():
         tokenid = event.args.tokenId
         owner, blockRevealed, score = contract.functions.getData(tokenid).call()
         info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
-        amulet_cache[tokenid] = info
+        amulet_cache[tokenid] = (time.time() + KNOWN_CACHE_DURATION, info)
 
         poke_opensea(info)
         send_tweet(info)
