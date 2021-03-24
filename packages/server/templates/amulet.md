@@ -1,4 +1,6 @@
+```
 {{ info.amulet|mdescape }}
+```
 
 # About this amulet
 This is an amulet, a short poem with a lucky SHA-256 hash, explained [here](https://text.bargains/).
