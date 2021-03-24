@@ -100,7 +100,7 @@ def amuletResponse(tokenhash, info):
     ]
     if has_antics(info.amulet):
         attributes.append({
-            'trait_type': 'Antics'
+            'value': 'Antics'
         })
     return jsonify({
         'name': info.title,

@@ -1,5 +1,5 @@
 ```
-{{ info.amulet|mdescape }}
+{{ info.amulet }}
 ```
 
 # About this amulet
@@ -9,4 +9,8 @@ You can find and mint your own amulets at [amulet.garden](https://at.amulet.gard
 
 This poem's rarity is {{ rarity }}.
 
-[Here]({{info.offsetUrl|mdescape}}) is a record of the carbon offset purchased in this poem's name.
+{% if not info.offsetUrl %}
+    This poem does not have a carbon offset URL! This is a formal requirement to be an Amulet, but the author hasn't provided a valid URL.
+{% else %}
+    [Here]({{info.offsetUrl|mdescape}}) is a record of the carbon offset purchased in this poem's name.
+{% endif %}
