@@ -14,5 +14,5 @@ handlers:
    static_files: app/\1
    upload: app/.*
 
-env_variables:
-  WEB3_PROVIDER_URI: https://mainnet.infura.io/v3/6f00acf9331b46c482e81341d0e81e99
+includes:
+  - env_variables.yaml
