@@ -91,10 +91,6 @@ function App(props) {
   const writeContracts = useContractLoader(injectedProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
-  // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts,"YourCollectible", "balanceOf", [ address ])
-  console.log("🤗 balance:",balance)
-
   //📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:",transferEvents)
@@ -165,7 +161,7 @@ function App(props) {
         <Switch>
           <Route path="/">
             <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
-              {address && <AmuletCreator readContracts={readContracts} writeContracts={writeContracts} provider={userProvider} />}
+              {address && <AmuletCreator contracts={writeContracts} provider={userProvider} />}
               {!address && <Typography.Text>Connect your wallet to mint an amulet</Typography.Text>}
             </div>
 

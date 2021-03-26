@@ -20,12 +20,9 @@ const DEBUG = false;
 */
 
 export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
-  let adjustPollTime = 1777;
-  if (pollTime) {
-    adjustPollTime = pollTime;
-  } else if (!pollTime && typeof args === "number") {
+  if (!pollTime && typeof args === "number") {
     // it's okay to pass poll time as last argument without args for the call
-    adjustPollTime = args;
+    pollTime = args;
   }
 
   const [value, setValue] = useState();
@@ -58,7 +55,7 @@ export default function useContractReader(contracts, contractName, functionName,
         console.log(e);
       }
     }
-  }, adjustPollTime, contracts && contracts[contractName]);
+  }, pollTime, contracts && contracts[contractName]);
 
   return value;
 }

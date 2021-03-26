@@ -39,7 +39,6 @@ function countUtf8Bytes(s){
 export default function AmuletFinder(props) {
     const [text, setText] = React.useState('');
     const score = scoreAmulet(text);
-    console.log({score});
     const id = ethers.utils.keccak256(Buffer.from(text));
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
     return (

@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export default function AmuletMinter(props) {
-    const Amulet = props.writeContracts.Amulet;
     const userAddress = useUserAddress(props.provider);
-    const amuletData = useContractReader(props.readContracts, "Amulet", "getData", [props.amulet.id]);
+    const [pollingInterval, setPollingInterval] = React.useState(null);
+    const amuletData = useContractReader(props.contracts, "Amulet", "getData", [props.amulet.id], pollingInterval);
 
     React.useEffect(() => {
         if(amuletData && amuletData.owner !== ZERO_ADDRESS) {
@@ -23,7 +23,8 @@ export default function AmuletMinter(props) {
     const tx = Transactor(props.provider);
 
     const mint = () => {
-        tx(Amulet.mint([userAddress, props.amulet.id]));
+        tx(props.contracts.Amulet.mint([userAddress, props.amulet.id]));
+        setPollingInterval(5000);
     };
     if(!amuletData) {
         return <Typography.Text>Checking amulet ownership...</Typography.Text>;
@@ -33,7 +34,7 @@ export default function AmuletMinter(props) {
             <Form.Item label="Rarity"><Typography.Text>{props.amulet.rarity}</Typography.Text></Form.Item>
             <Form.Item>
                 <Button onClick={props.onBack}>Back</Button>
-                <Button onClick={mint}>Mint</Button>
+                <Button onClick={mint} disabled={!props.contracts}>Mint</Button>
             </Form.Item>
         </Form>);
     }

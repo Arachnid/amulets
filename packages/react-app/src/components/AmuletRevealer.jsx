@@ -9,16 +9,13 @@ import { Link } from "react-router-dom";
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export default function AmuletRevealer(props) {
-    const Amulet = props.writeContracts.Amulet;
     const userAddress = useUserAddress(props.provider);
-    const amuletData = useContractReader(props.readContracts, "Amulet", "getData", [props.amulet.id]);
+    const [pollingInterval, setPollingInterval] = React.useState(null);
+    const amuletData = useContractReader(props.contracts, "Amulet", "getData", [props.amulet.id], pollingInterval);
     const tx = Transactor(props.provider);
     const [title, setTitle] = React.useState("");
     const [offset, setOffset] = React.useState("");
-    // Listen for mint events on the Amulet contract. We don't actually have to use this, as triggering it will cause us to check
-    // for amulet ownership below and redirect if it's been minted.
-    const mintEvents = useEventListener(props.readContracts, "Amulet", "AmuletRevealed", undefined, undefined, {tokenId: props.amulet.id});
-
+ 
     React.useEffect(() => {
         if(amuletData && amuletData.blockRevealed != 0) {
             // Already revealed? Skip this step.
@@ -27,7 +24,8 @@ export default function AmuletRevealer(props) {
     });
 
     const reveal = () => {
-        tx(Amulet.reveal([title, props.amulet.text, offset]));
+        tx(props.contracts.Amulet.reveal([title, props.amulet.text, offset]));
+        setPollingInterval(5000);
     };
 
     if(!amuletData) {
@@ -42,7 +40,7 @@ export default function AmuletRevealer(props) {
                 <Form.Item label="Rarity"><Typography.Text>{props.amulet.rarity}</Typography.Text></Form.Item>
                 <Form.Item>
                     <Button onClick={props.onBack}>Back</Button>
-                    <Button onClick={reveal}>Reveal</Button>
+                    <Button onClick={reveal} disabled={!props.contracts || !offset}>Reveal</Button>
                 </Form.Item>
             </Form>
         </>);
