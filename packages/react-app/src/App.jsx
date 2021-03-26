@@ -44,11 +44,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const targetNetwork = NETWORKS['mainnet']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = false
-
-// 🛰 providers
-if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
-const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+const DEBUG = true
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -67,13 +63,10 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = injectedProvider || localProvider;
+  if(DEBUG) console.log({userProvider, injectedProvider, localProvider})
 
   const address = useUserAddress(injectedProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
-
-  // You can warn the user if you would like them to be on a specific network
-  let localChainId = localProvider && localProvider._network && localProvider._network.chainId
-  if(DEBUG) console.log("🏠 localChainId",localChainId)
 
   let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
   if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
@@ -84,27 +77,23 @@ function App(props) {
   const tx = Transactor(userProvider)
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
+  const readContracts = useContractLoader(userProvider)
   if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(injectedProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
-  //📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
-  console.log("📟 Transfer events:",transferEvents)
-
 
   let networkDisplay = ""
-  if(localChainId && selectedChainId && localChainId != selectedChainId ){
+  if(selectedChainId && targetNetwork.chainId != selectedChainId ){
     networkDisplay = (
       <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
         <Alert
           message={"⚠️ Wrong Network"}
           description={(
             <div>
-              You have <b>{NETWORK(selectedChainId)?.name || selectedChainId}</b> selected and you need to be on <b>{NETWORK(localChainId)?.name || localChainId}</b>.
+              You have <b>{NETWORK(selectedChainId)?.name || selectedChainId}</b> selected and you need to be on <b>{targetNetwork.name}</b>.
             </div>
           )}
           type="error"
@@ -226,7 +215,7 @@ function App(props) {
            address={address}
            localProvider={localProvider}
            userProvider={userProvider}
-           mainnetProvider={mainnetProvider}
+           mainnetProvider={localProvider}
            web3Modal={web3Modal}
            loadWeb3Modal={loadWeb3Modal}
            logoutOfWeb3Modal={logoutOfWeb3Modal}
