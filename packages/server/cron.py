@@ -2,7 +2,7 @@ from flask import abort, request
 import requests
 import time
 import tweepy
-from web3.auto import w3
+from web3.auto.infura import w3
 
 from utils import load_contract, AmuletInfo, RARITIES, amulet_cache, KNOWN_CACHE_DURATION
 

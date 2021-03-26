@@ -2,7 +2,7 @@ from collections import namedtuple
 import json
 import pylru
 import time
-from web3.auto import w3
+from web3.auto.infura import w3
 
 
 RARITIES = {

@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+# coding=utf-8
+
 from binascii import hexlify
 from io import BytesIO
 from flask import Flask, abort, jsonify, render_template, send_file
 from hashlib import sha256
 from markupsafe import Markup
 import re
-from web3.auto import w3
+from web3.auto.infura import w3
 
 from cron import cron
 import imagegen
