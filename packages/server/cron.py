@@ -1,4 +1,5 @@
 from flask import abort, request
+from google.cloud import datastore
 import requests
 import time
 import tweepy
@@ -8,20 +9,24 @@ from utils import load_contract, AmuletInfo, RARITIES, amulet_cache, KNOWN_CACHE
 
 
 OPENSEA_DOMAIN = "api.opensea.io"
-
+DEPLOY_BLOCK = 12107104
 
 contract = load_contract('Amulet')
-last_block_scanned = None
+client = datastore.Client()
+status_key = client.key('Status', '1')
 
 
 def cron():
-    if not request.headers.get('X-Appengine-Cron'):
-        abort(403)
+    status = client.get(status_key)
+    if not status:
+        status = datastore.Entity(status_key)
+        status.update({'block': DEPLOY_BLOCK})
 
-    global last_block_scanned
+    #if not request.headers.get('X-Appengine-Cron'):
+    #    abort(403)
+
     current_block = w3.eth.blockNumber
-    if not last_block_scanned:
-        last_block_scanned = current_block - 25
+    last_block_scanned = status['block']
     events = contract.events.AmuletRevealed.getLogs(
         fromBlock=last_block_scanned + 1,
         toBlock=current_block)
@@ -32,9 +37,11 @@ def cron():
         info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
         amulet_cache[tokenid] = (time.time() + KNOWN_CACHE_DURATION, info)
 
-        poke_opensea(info)
-        send_tweet(info)
-    last_block_scanned = current_block
+        #poke_opensea(info)
+        #send_tweet(info)
+        print(info)
+    status.update({'block': current_block})
+    client.put(status)
     return "OK"
 
 

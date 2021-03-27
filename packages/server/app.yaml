@@ -1,4 +1,4 @@
-runtime: python39
+runtime: python37
 
 handlers:
  - url: /contract.json
