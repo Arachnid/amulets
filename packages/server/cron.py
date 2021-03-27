@@ -22,8 +22,8 @@ def cron():
         status = datastore.Entity(status_key)
         status.update({'block': DEPLOY_BLOCK})
 
-    #if not request.headers.get('X-Appengine-Cron'):
-    #    abort(403)
+    if not request.headers.get('X-Appengine-Cron'):
+       abort(403)
 
     current_block = w3.eth.blockNumber
     last_block_scanned = status['block']
@@ -37,9 +37,8 @@ def cron():
         info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
         amulet_cache[tokenid] = (time.time() + KNOWN_CACHE_DURATION, info)
 
-        #poke_opensea(info)
-        #send_tweet(info)
-        print(info)
+        poke_opensea(info)
+        send_tweet(info)
     status.update({'block': current_block})
     client.put(status)
     return "OK"
