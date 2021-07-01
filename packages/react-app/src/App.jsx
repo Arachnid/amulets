@@ -41,7 +41,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['mainnet']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
@@ -58,6 +58,7 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 const blockExplorer = targetNetwork.blockExplorer;
 
 
+
 function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
@@ -68,6 +69,8 @@ function App(props) {
   const address = useUserAddress(injectedProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
 
+  const yourLocalBalance = useBalance(localProvider, address);
+
   let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
   if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
 
@@ -75,6 +78,9 @@ function App(props) {
 
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userProvider)
+
+
+  const faucetTx = Transactor(localProvider, 1);
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(userProvider)
@@ -126,6 +132,37 @@ function App(props) {
   }, [setRoute]);
 
   const [ transferToAddresses, setTransferToAddresses ] = useState({})
+
+
+  let faucetHint = "";
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+
+  const [faucetClicked, setFaucetClicked] = useState(false);
+  if (
+    !faucetClicked &&
+    localProvider &&
+    localProvider._network &&
+    localProvider._network.chainId === 31337 &&
+    yourLocalBalance &&
+    formatEther(yourLocalBalance) <= 0
+  ) {
+    faucetHint = (
+      <div style={{ padding: 16 }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            faucetTx({
+              to: address,
+              value: parseEther("0.01"),
+            });
+            setFaucetClicked(true);
+          }}
+        >
+          💰 Grab funds from the faucet ⛽️
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
@@ -222,6 +259,7 @@ function App(props) {
            blockExplorer={blockExplorer}
            minimized={true}
          />
+          {faucetHint}
       </div>
     </div>
   );

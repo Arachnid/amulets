@@ -1,5 +1,5 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "6f00acf9331b46c482e81341d0e81e99";
+export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad" // go back to using this for prod: 6f00acf9331b46c482e81341d0e81e99";
 
 //BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "210d4438-1ae0-4f42-ab0a-b9748ef6125b"
