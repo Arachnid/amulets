@@ -1,8 +1,47 @@
-body {
+/* body {
   margin: 0;
 }
+
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+} */
+
+
+@font-face {
+  font-family: "CrimsonText-Bold";
+  src: url('./styles/fonts/CrimsonText-Bold.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-BoldItalic";
+  src: url('./styles/fonts/CrimsonText-BoldItalic.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-Italic";
+  src: url('./styles/fonts/CrimsonText-Italic.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-Regular";
+  src: url('./styles/fonts/CrimsonText-Regular.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-SemiBold";
+  src: url('./styles/fonts/CrimsonText-SemiBold.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-SemiBoldItalic";
+  src: url('./styles/fonts/CrimsonText-SemiBoldItalic.woff');
+  font-display: swap;
 }
