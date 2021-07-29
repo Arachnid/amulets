@@ -19,6 +19,7 @@ import ReactJson from 'react-json-view'
 
 //! import pages
 import Home from './pages/Home'
+import Faq from './pages/Faq'
 
 //! import styles
 import './styles/header.css'
@@ -191,7 +192,8 @@ function App(props) {
           </Menu.Item>
         </Menu> */}
 
-        <Switch>
+          <Switch>
+            <Route path="/faq" component={Faq} />
           <Route path="/">
             {/* //! Homepage rendering */}
             <Home
@@ -203,7 +205,7 @@ function App(props) {
               {address && <AmuletCreator contracts={writeContracts} provider={userProvider} />}
               {!address && <Typography.Text>Connect your wallet to mint an amulet</Typography.Text>}
             </div> */}
-          </Route>
+            </Route>
         </Switch>
       </BrowserRouter>
 
