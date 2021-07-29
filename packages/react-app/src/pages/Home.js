@@ -8,11 +8,35 @@ const Home = (props) => {
 
     return (
         <PageLayout>
-            <h1>Home page</h1>
-            {props.address && <AmuletCreator contracts={props.contracts} provider={props.provider} />}
-            {!props.address && <div>Connect your wallet to mint an amulet</div>}
+            <img
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/SpongeBob_SquarePants_character.svg/1200px-SpongeBob_SquarePants_character.svg.png"
+                className="amulet-symbol"
+            />
+            <section className="body-text">
+                <b>To qualify, a poem must satisfy these criteria:</b>
+                <p style={{"paddingTop":"20px"}}>Its complete Unicode text is 64 bytes or less. The hexadecimal SHA-256 hash of the text includes four or more 8s in a row.</p>
+            </section>
+            <img
+                src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/SpongeBob_SquarePants_character.svg/1200px-SpongeBob_SquarePants_character.svg.png"
+                className="amulet-symbol"
+            />
+            <section className="body-text">
+                <b>The rarity of the amulet is determined by the number of sequential 8s in the hash:</b>
+                <ul style={{"listStyleType": "none", "paddingTop":"15px"}}>
+                    <li style={{"textDecoration": "none"}}>8888: common</li>
+                    <li style={{"textDecoration": "none"}}>88888: uncommon</li>
+                    <li style={{"textDecoration": "none"}}>888888: rare</li>
+                    <li style={{"textDecoration": "none"}}>8888888: epic</li>
+                    <li style={{"textDecoration": "none"}}>88888888: legendary</li>
+                    <li style={{"textDecoration": "none"}}>888888888: mythic</li>
+                    <li style={{"textDecoration": "none"}}>8888888888+: ✦✦✦</li>
+                </ul>
+            </section>
         </PageLayout>
     )
 }
+
+// {props.address && <AmuletCreator contracts={props.contracts} provider={props.provider} />}
+// {!props.address && <div>Connect your wallet to mint an amulet</div>}
 
 export default Home
