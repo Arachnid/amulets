@@ -58,6 +58,6 @@ b > em {
   font-family: "CrimsonText-BoldItalic";
 }
 
-h1, h2, h3, h4, h5, h6 > em {
+h1  > em, h2 > em, h3 > em, h4 > em, h5 > em, h6 > em {
   font-family: "CrimsonText-SemiBoldItalic";
 }
