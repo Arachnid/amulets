@@ -1,6 +1,8 @@
 import React from "react";
 // import { PageHeader } from "antd";
 
+import PageLayout from '../utils/PageLayout'
+
 // // displays a page header
 
 // export default function Header() {
@@ -15,17 +17,25 @@ import React from "react";
 const Header = () => {
 
   return (
-    <nav className="header">
-      <div>
-        <a href="/scratchpad" className="nav-item">scratchpad</a>
-      </div>
-      <div>
-        <a href="/collection" className="nav-item">collection</a>
-      </div>
-      <div>
-        <a href="faq" className="nav-item">faq</a>
-      </div>
-    </nav>
+    <React.Fragment>
+        <nav className="header">
+          <div>
+            <a href="/scratchpad" className="nav-item">scratchpad</a>
+          </div>
+          <div>
+            <a href="/collection" className="nav-item">collection</a>
+          </div>
+          <div>
+            <a href="faq" className="nav-item">faq</a>
+          </div>
+        </nav>
+        <div className="title" >
+          <h1 className="site-title">Amulet~</h1>
+          <div className="site-description">
+            An amulet is a kind of poem that depends on language, code, and luck.
+          </div>
+        </div>
+    </React.Fragment>
   )
 }
 

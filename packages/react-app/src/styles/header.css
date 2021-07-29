@@ -1,13 +1,36 @@
 
 .header {
+    position: absolute;
+    width: 1440px;
+    height: 100px;
+    left: 0px;
+    top: 0px;
+    /* width: 100%; */
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 10px;
     justify-content: space-evenly;
+    /* justify-content: center; */
+    /* column-gap: 130px; */
 }
 
 .nav-item {
-    text-align: center;
+    margin-left: -30px;
     border-bottom: 1px solid black;
     /* text-decoration: underline; */
+}
+
+.title {
+    padding-top: 50px;
+}
+
+.site-title {
+    font-family: "YatraOne-Regular";
+    text-align: center;
+    font-size: 64px;
+}
+
+.site-description {
+    text-align: center;
+    font-size: 24px;
 }

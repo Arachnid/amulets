@@ -171,13 +171,14 @@ function App(props) {
   }
 
   return (
-    <div className="App">
+    <React.Fragment>
 
-      {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
-      <BrowserRouter>
+      {/* ✏️ Edit the header and change the title to your project name */}
+    <div className="App">
 
+      <BrowserRouter>
         {/* <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">Create an Amulet</Link>
@@ -225,6 +226,7 @@ function App(props) {
           {faucetHint}
       </div>
     </div>
+    </React.Fragment>
   );
 }
 
