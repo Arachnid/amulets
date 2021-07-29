@@ -16,9 +16,15 @@ const Header = () => {
 
   return (
     <nav className="header">
-      <a href="/scratchpad" className="nav-item">scratchpad</a>
-      <a href="/collection" className="nav-item">collection</a>
-      <a href="faq" className="nav-item">faq</a>
+      <div>
+        <a href="/scratchpad" className="nav-item">scratchpad</a>
+      </div>
+      <div>
+        <a href="/collection" className="nav-item">collection</a>
+      </div>
+      <div>
+        <a href="faq" className="nav-item">faq</a>
+      </div>
     </nav>
   )
 }

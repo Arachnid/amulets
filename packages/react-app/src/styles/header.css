@@ -3,8 +3,11 @@
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 10px;
+    justify-content: space-evenly;
 }
 
 .nav-item {
     text-align: center;
+    border-bottom: 1px solid black;
+    /* text-decoration: underline; */
 }
