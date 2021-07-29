@@ -1,3 +1,15 @@
 .App {
   text-align: center;
 }
+
+@font-face {
+  font-family: "CrimsonText-Bold";
+  src: url('./styles/fonts/CrimsonText-Bold.ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-BoldItalic";
+  src: url('./styles/fonts/CrimsonText-BoldItalic.ttf');
+  font-display: swap;
+}

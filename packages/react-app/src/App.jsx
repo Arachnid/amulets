@@ -16,6 +16,13 @@ import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 import ReactJson from 'react-json-view'
+
+//! import pages
+import Home from './pages/Home'
+
+//! import styles
+import './styles/header.css'
+
 const { BufferList } = require('bl')
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require('ipfs-http-client');
@@ -56,7 +63,6 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
-
 
 
 function App(props) {
@@ -186,59 +192,16 @@ function App(props) {
 
         <Switch>
           <Route path="/">
-            <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
+            {/* //! Homepage rendering */}
+            <Home
+              address={address}
+              contracts={writeContracts}
+              provider={userProvider}
+            />
+            {/* <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
               {address && <AmuletCreator contracts={writeContracts} provider={userProvider} />}
               {!address && <Typography.Text>Connect your wallet to mint an amulet</Typography.Text>}
-            </div>
-
-            {/* <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
-              <List
-                bordered
-                dataSource={yourCollectibles}
-                renderItem={(item) => {
-                  const id = item.id.toNumber()
-                  return (
-                    <List.Item key={id+"_"+item.uri+"_"+item.owner}>
-
-                      <Card title={(
-                        <div>
-                          <span style={{fontSize:16, marginRight:8}}>#{id}</span> {item.name}
-                        </div>
-                      )}>
-                      <div><img src={item.image} style={{maxWidth:150}} /></div>
-                      <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        owner: <Address
-                            address={item.owner}
-                            ensProvider={mainnetProvider}
-                            blockExplorer={blockExplorer}
-                            fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={(newValue)=>{
-                            let update = {}
-                            update[id] = newValue
-                            setTransferToAddresses({ ...transferToAddresses, ...update})
-                          }}
-                        />
-                        <Button onClick={()=>{
-                          console.log("writeContracts",writeContracts)
-                          tx( writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id) )
-                        }}>
-                          Transfer
-                        </Button>
-                      </div>
-                    </List.Item>
-                  )
-                }}
-              />
             </div> */}
-
           </Route>
         </Switch>
       </BrowserRouter>
