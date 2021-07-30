@@ -98,3 +98,9 @@ h1  > em, h2 > em, h3 > em, h4 > em, h5 > em, h6 > em {
   display: flex;
   flex-direction: column;
 }
+
+.flip {
+  /* flip horizontally */
+  transform: scaleY(-1);
+}
+

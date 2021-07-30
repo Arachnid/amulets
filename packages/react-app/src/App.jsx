@@ -20,9 +20,11 @@ import ReactJson from 'react-json-view'
 //! import pages
 import Home from './pages/Home'
 import Faq from './pages/Faq'
+import Collection from './pages/Collection'
 
 //! import styles
 import './styles/header.css'
+import './styles/transaction.css'
 
 const { BufferList } = require('bl')
 // https://www.npmjs.com/package/ipfs-http-client
@@ -192,7 +194,8 @@ function App(props) {
           </Menu.Item>
         </Menu> */}
 
-          <Switch>
+        <Switch>
+            <Route path="/collection" component={Collection} />
             <Route path="/faq" component={Faq} />
           <Route path="/">
             {/* //! Homepage rendering */}
