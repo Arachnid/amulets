@@ -8,18 +8,22 @@ const Home = (props) => {
 
     return (
         <PageLayout>
-            <img
-                src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/SpongeBob_SquarePants_character.svg/1200px-SpongeBob_SquarePants_character.svg.png"
-                className="amulet-symbol"
-            />
+            <div style={{"textAlign": "center"}}>
+                <img
+                    src={process.env.PUBLIC_URL + './symbol-1.svg'}
+                    className="amulet-symbol"
+                />
+            </div>
             <section className="body-text">
                 <b>To qualify, a poem must satisfy these criteria:</b>
                 <p style={{"paddingTop":"20px"}}>Its complete Unicode text is 64 bytes or less. The hexadecimal SHA-256 hash of the text includes four or more 8s in a row.</p>
             </section>
-            <img
-                src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/SpongeBob_SquarePants_character.svg/1200px-SpongeBob_SquarePants_character.svg.png"
-                className="amulet-symbol"
-            />
+            <div style={{ "textAlign": "center" }}>    
+                <img
+                    src={process.env.PUBLIC_URL + './symbol-2.svg'}
+                    className="amulet-symbol"
+                />
+            </div>
             <section className="body-text">
                 <b>The rarity of the amulet is determined by the number of sequential 8s in the hash:</b>
                 <ul style={{"listStyleType": "none", "paddingTop":"15px"}}>

@@ -30,7 +30,9 @@ const Header = () => {
           </div>
         </nav>
         <div className="title" >
-          <h1 className="site-title">Amulet~</h1>
+          <a href="/">
+            <h1 className="site-title">Amulet~</h1>
+          </a>
           <div className="site-description">
             An amulet is a kind of poem that depends on language, code, and luck.
           </div>

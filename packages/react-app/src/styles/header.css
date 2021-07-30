@@ -1,11 +1,10 @@
 
 .header {
     position: absolute;
-    width: 1440px;
     height: 100px;
     left: 0px;
     top: 0px;
-    /* width: 100%; */
+    width: 100%;
     display: grid;
     grid-template-columns: auto auto auto;
     padding: 10px;
