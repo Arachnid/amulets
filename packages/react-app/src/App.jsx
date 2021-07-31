@@ -173,6 +173,8 @@ function App(props) {
     );
   }
 
+  // const [currentPath, setCurrentPath ] = useState("/")
+
   return (
     <React.Fragment>
 

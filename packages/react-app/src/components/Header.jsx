@@ -1,7 +1,7 @@
 import React from "react";
 // import { PageHeader } from "antd";
 
-import PageLayout from '../utils/PageLayout'
+// import PageLayout from '../utils/PageLayout'
 
 // // displays a page header
 
@@ -16,17 +16,21 @@ import PageLayout from '../utils/PageLayout'
 
 const Header = () => {
 
+  // console.log(window.location.pathname.split('/')[1])
+
+  let currentPage = window.location.pathname.split('/')[1]
+
   return (
     <React.Fragment>
         <nav className="header">
           <div>
-            <a href="/scratchpad" className="nav-item">scratchpad</a>
+            <a href="/scratchpad" className={currentPage === 'scratchpad' ? 'active' : 'nav-item'}>scratchpad</a>
           </div>
           <div>
-            <a href="/collection" className="nav-item">collection</a>
+            <a href="/collection" className={currentPage === 'collection' ? 'active' : 'nav-item'}>collection</a>
           </div>
           <div>
-            <a href="faq" className="nav-item">faq</a>
+            <a href="faq" className={currentPage === 'faq' ? 'active' : 'nav-item'}>faq</a>
           </div>
         </nav>
         <div className="title" >

@@ -15,9 +15,9 @@ const Faq = () => {
             </div>
             <div className="faq-question">
                 <b>How do I mint my amulet?</b>
-                <p>This question is, unfortunately, beyond the scope of this website. Zora <a href="https://help.zora.co/en/articles/4876846-what-is-a-nft" target="_blank">
+                <p>This question is, unfortunately, beyond the scope of this website. Zora <a href="https://help.zora.co/en/articles/4876846-what-is-a-nft" target="_blank" rel="noopener noreferrer">
                     offers a FAQ of its own
-                </a> that’s worth reading, along with a <a href="https://zora.engineering/" target="_blank">detailed schematic</a> for the technically-inclined.</p>
+                </a> that’s worth reading, along with a <a href="https://zora.engineering/" target="_blank" rel="noopener noreferrer">detailed schematic</a> for the technically-inclined.</p>
             </div>
             <div className="faq-question">
                 <b>Isn’t it possible to generate rare amulets easily by larding a poem with obscure Unicode characters?</b>

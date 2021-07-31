@@ -1,7 +1,7 @@
 import React from 'react'
 import PageLayout from '../utils/PageLayout'
 
-import { AmuletCreator } from '../components'
+// import { AmuletCreator } from '../components'
 // import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Typography } from "antd";
 
 const Home = (props) => {
@@ -10,6 +10,7 @@ const Home = (props) => {
         <PageLayout>
             <div style={{"textAlign": "center"}}>
                 <img
+                    alt="Amulets" 
                     src={process.env.PUBLIC_URL + './symbol-1.svg'}
                     className="amulet-symbol"
                 />
@@ -20,6 +21,7 @@ const Home = (props) => {
             </section>
             <div style={{ "textAlign": "center" }}>    
                 <img
+                    alt="Amulets" 
                     src={process.env.PUBLIC_URL + './symbol-2.svg'}
                     className="amulet-symbol"
                 />
