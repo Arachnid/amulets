@@ -11,14 +11,13 @@ const CollectionCard = ({ transaction }) => {
         //! "timestamp": ["2021-02-23 — sold to 0xEC6D"]
 
     return (
-        <div style={{"paddingTop": "15px"}}>
-            <h1 className="transaction-header">{header}</h1>
-            <div className="transaction-body">
-                <div>{title}</div>
-                <div>{rarity}</div>
-                <div>{author}</div>
-                {timestamp.map((time) => <div>{time}</div>)}
+        <div style={{"padding-top":"84px"}}>
+            <div className="collection-card">
+                <h1 className="transaction-header">{header}</h1>
             </div>
+                <div className="transaction-body">
+                    <div>{title}, <span>{rarity}</span> <span style={{"float": "right"}}><div>{author}</div></span></div>
+                </div>
         </div>
     )
 }

@@ -128,13 +128,14 @@ function App(props) {
         />
       </div>
     )
-  }else{
-    networkDisplay = (
-      <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
-        {targetNetwork.name}
-      </div>
-    )
   }
+  // else {
+  //   networkDisplay = (
+  //     <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
+  //       {targetNetwork.name}
+  //     </div>
+  //   )
+  // }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
