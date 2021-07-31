@@ -21,10 +21,22 @@ import ReactJson from 'react-json-view'
 import Home from './pages/Home'
 import Faq from './pages/Faq'
 import Collection from './pages/Collection'
+import Scratchpad from './pages/Scratchpad'
 
 //! import styles
 import './styles/header.css'
 import './styles/transaction.css'
+
+//! TO DO LIST
+
+// TODO Add actual svg to pages - to switch to white on dark mode
+// TODO Add conditional rendering for triangle png toggle ("/collection") - switch to white on dark mode
+//? TODO Create collection/rev/1
+//? TODO Create collection/rev/2
+
+
+
+
 
 const { BufferList } = require('bl')
 // https://www.npmjs.com/package/ipfs-http-client
@@ -173,8 +185,6 @@ function App(props) {
     );
   }
 
-  // const [currentPath, setCurrentPath ] = useState("/")
-
   return (
     <React.Fragment>
 
@@ -197,14 +207,19 @@ function App(props) {
         </Menu> */}
 
         <Switch>
+            <Route path="/scratchpad" component={Scratchpad}
+              address={address}
+              contracts={writeContracts}
+              provider={userProvider}
+            />
             <Route path="/collection" component={Collection} />
             <Route path="/faq" component={Faq} />
           <Route path="/">
             {/* //! Homepage rendering */}
             <Home
-              address={address}
-              contracts={writeContracts}
-              provider={userProvider}
+              // address={address}
+              // contracts={writeContracts}
+              // provider={userProvider}
             />
             {/* <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
               {address && <AmuletCreator contracts={writeContracts} provider={userProvider} />}

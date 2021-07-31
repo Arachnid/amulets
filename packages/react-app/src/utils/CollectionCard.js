@@ -1,8 +1,6 @@
 import React from 'react';
 
 const CollectionCard = ({ transaction }) => {
-    
-    console.log(transaction)
 
     const {header, title, rarity, author, timestamp} = transaction
 
@@ -12,7 +10,6 @@ const CollectionCard = ({ transaction }) => {
         //! "author": "author: 0x8888 (me)",
         //! "timestamp": ["2021-02-23 — sold to 0xEC6D"]
 
-    // console.log(header)
     return (
         <div style={{"paddingTop": "15px"}}>
             <h1 className="transaction-header">{header}</h1>

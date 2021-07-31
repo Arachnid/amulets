@@ -34,8 +34,13 @@ const Header = () => {
           </div>
         </nav>
         <div className="title" >
-          <a href="/">
-            <h1 className="site-title">Amulet~</h1>
+        <a href="/">
+          <div style={{"text-align": "center"}}>
+            <img
+              style={{"paddingTop":"30px", "paddingBottom": "30px"}}
+              src={process.env.PUBLIC_URL + "./Amulet-logo.svg"}
+            />
+          </div>
           </a>
           <div className="site-description">
             An amulet is a kind of poem that depends on language, code, and luck.
