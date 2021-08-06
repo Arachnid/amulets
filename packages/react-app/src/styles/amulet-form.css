@@ -1,4 +1,8 @@
 
+.ant-form {
+    padding-top: 20px;
+}
+
 .ant-form-item-control-input-content {
     padding-top: 20px;
 }
@@ -35,4 +39,12 @@
     padding-bottom: 100px;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+#active {
+    color: black;
+}
+
+#inactive {
+    color: #bdbdbd;
 }

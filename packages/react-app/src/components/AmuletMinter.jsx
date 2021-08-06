@@ -27,15 +27,49 @@ export default function AmuletMinter(props) {
         setPollingInterval(5000);
     };
     if(!amuletData) {
-        return <Typography.Text>Checking amulet ownership...</Typography.Text>;
+        // return <Typography.Text>Checking amulet ownership...</Typography.Text>;
+        return (
+            <div style={{"paddingTop":"20px", "fontSize":"18px", "textAlign":"center"}}>
+                Checking amulet ownership...
+            </div>
+        )
     } else {
-        return (<Form>
-            <Form.Item label="Amulet"><Typography.Text style={{whiteSpace: "pre"}}>{props.amulet.text}</Typography.Text></Form.Item>
-            <Form.Item label="Rarity"><Typography.Text>{props.amulet.rarity}</Typography.Text></Form.Item>
-            <Form.Item>
+        return (
+        <form style={{"width":"100%", "paddingTop":"20px", "fontSize":"18px"}}>
+            <div>
+                <div>
+                    Amulet:
+                    <span style={{"paddingLeft":"1rem"}}>
+                        {props.amulet.text}
+                    </span>
+                </div>
+                <div>
+                    Rarity: 
+                    <span style={{"paddingLeft":"1rem"}}>
+                        {props.amulet.rarity}
+                    </span>
+                </div>
+            </div>
+            {/* <Form.Item label="Amulet"><Typography.Text style={{whiteSpace: "pre"}}>{props.amulet.text}</Typography.Text></Form.Item>
+            <Form.Item label="Rarity"><Typography.Text>{props.amulet.rarity}</Typography.Text></Form.Item> */}
+            <div style={{"paddingTop":"20px", "fontSize":"18px"}}>
+                <a
+                    onClick={props.onBack}
+                    style={{"cursor":"pointer"}}
+                >
+                    Back
+                </a>
+                <span
+                    onClick={mint}
+                    style={{"float":"right", "cursor":"pointer"}}
+                >
+                    Mint
+                </span>
+            </div>
+            {/* <Form.Item>
                 <Button onClick={props.onBack}>Back</Button>
                 <Button onClick={mint} disabled={!props.contracts}>Mint</Button>
-            </Form.Item>
-        </Form>);
+            </Form.Item> */}
+        </form>);
     }
 }

@@ -2,8 +2,13 @@ import React from "react";
 import { Button, Form, Input, Typography } from "antd";
 import { ethers } from "ethers";
 
+// ! scoreAmulet doesn't return the hash like in the mock
+
+// ! countUtf8Bytes doesn't return the actual number of bytes - just the length of the text 
+
 function scoreAmulet(text) {
     const hash = ethers.utils.sha256(Buffer.from(text));
+    
     let longest = 0;
     let current = 0;
     for(let i = 0; i < hash.length; i++) {
@@ -14,6 +19,7 @@ function scoreAmulet(text) {
             current = 0;
         }
     }
+    
     return longest;
 }
 
@@ -41,6 +47,8 @@ export default function AmuletFinder(props) {
     const score = scoreAmulet(text);
     const id = ethers.utils.keccak256(Buffer.from(text));
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
+
+    console.log("BYTES", countUtf8Bytes(text))
     return (
         <Form>
             <Form.Item label="">
@@ -56,8 +64,14 @@ export default function AmuletFinder(props) {
                 />
             </Form.Item>
                 <div style={{"textDecoration":"underline"}}>
-                    <a>Load example</a>
-                        <div style={{"float": "right"}} className="next-step">
+                    <a
+                        style={{"textDecoration":"underline", "color": "#bdbdbd"}}
+                    >Load example</a>
+                        <div 
+                            style={{"float": "right"}}
+                            className="next-step"
+                            onClick={() => props.onFind({text, score, id, rarity})}
+                        >
                             <span className="next" style={{ "color": "#0038FF", "paddingLeft": "2px", "cursor": "pointer"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#0038FF" className="next-arrow">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -68,13 +82,21 @@ export default function AmuletFinder(props) {
                                 </div>
                         </div>
                 </div>
-            <Form.Item>
                 {rarity !== 'None' ? 
-                    <div className="body-text">
-                        This is { rarity === 'Uncommon' || rarity === 'Epic' ? "an" : "a"} {rarity.toLowerCase()} amulet.
-                    </div>
+                    <>
+                        <div style={{"textAlign": "center", "fontSize":"24px", "paddingTop":"20px", "paddingBottom":"20px"}}>
+                            This is { rarity === 'Uncommon' || rarity === 'Epic' ? "an" : "a"} {rarity.toLowerCase()} amulet.
+                        </div>
+                        <div>
+                        SHA-256 hash:
+                            <span style={{"float": "right"}}>
+                                {countUtf8Bytes(text)} bytes
+                            </span>
+                            <br/>
+                            {id}
+                        </div>
+                    </>
                 : null}
-            </Form.Item>
         </Form>
     );
 }
