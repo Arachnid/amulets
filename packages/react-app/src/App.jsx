@@ -85,15 +85,18 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = injectedProvider || localProvider;
-  if(DEBUG) console.log({userProvider, injectedProvider, localProvider})
+  if (DEBUG) console.log({ userProvider, injectedProvider, localProvider })
+
+  // console.log("injectedProvider", injectedProvider)
+  // console.log("localProvider", localProvider)
 
   const address = useUserAddress(injectedProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
-
+  
   const yourLocalBalance = useBalance(localProvider, address);
 
   let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
-  if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
+  if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId)
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
@@ -113,7 +116,8 @@ function App(props) {
 
 
   let networkDisplay = ""
-  if(selectedChainId && targetNetwork.chainId != selectedChainId ){
+  if (selectedChainId && targetNetwork.chainId != selectedChainId) {
+    // console.log(selectedChainId)
     networkDisplay = (
       <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
         <Alert
@@ -186,6 +190,8 @@ function App(props) {
     );
   }
 
+  console.log(address)
+
   return (
     <React.Fragment>
 
@@ -208,11 +214,14 @@ function App(props) {
         </Menu> */}
 
         <Switch>
-            <Route path="/scratchpad" component={Scratchpad}
-              address={address}
-              contracts={writeContracts}
-              provider={userProvider}
-            />
+            <Route path="/scratchpad"
+            >
+              <Scratchpad
+                address={address}
+                contracts={writeContracts}
+                provider={userProvider}
+              />
+            </Route>
             <Route path="/collection" component={Collection} />
             <Route path="/faq" component={Faq} />
           <Route path="/">

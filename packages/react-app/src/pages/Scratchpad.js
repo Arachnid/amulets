@@ -4,6 +4,7 @@ import { AmuletCreator } from '../components'
 
 const Scratchpad = (props) => {
 
+    console.log(props.address)
     return (
         <PageLayout>
             {props.address && <AmuletCreator contracts={props.contracts} provider={props.provider} />}

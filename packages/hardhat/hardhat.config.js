@@ -20,6 +20,7 @@ task("deploy", "Deploy the contracts").setAction(async () => {
 
 task("mint", "Mint sample amulets")
   .addOptionalParam("owner", "Owner address", "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1")
+  // .addOptionalParam("owner", "Owner address", "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0")
   .setAction(async ({owner}) => {
     const accounts = await ethers.getSigners();
     await accounts[0].sendTransaction({to: owner, value: ethers.BigNumber.from('1000000000000000000')});
