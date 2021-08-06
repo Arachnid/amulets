@@ -26,6 +26,7 @@ import Scratchpad from './pages/Scratchpad'
 //! import styles
 import './styles/header.css'
 import './styles/transaction.css'
+import './styles/amulet-form.css'
 
 //! TO DO LIST
 

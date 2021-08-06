@@ -43,7 +43,7 @@ export default function AmuletFinder(props) {
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
     return (
         <Form>
-            <Form.Item label="Amulet">
+            <Form.Item>
                 <Input.TextArea rows={4} value={text} onChange={({target: { value }}) => setText(value)} />
             </Form.Item>
             <Form.Item label="Rarity">
