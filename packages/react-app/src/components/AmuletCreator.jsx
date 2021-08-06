@@ -13,11 +13,15 @@ export default function AmuletCreator(props) {
     return (
         <>
             <Steps size="small" current={step}>
-                <Steps.Step title="Find an Amulet" />
-                <Steps.Step title="Mint your Amulet" />
-                <Steps.Step title="Reveal your Amulet" />
-                <Steps.Step title="Done" />
+                <Steps.Step title="Find an Amulet" icon={" "} />
+                <Steps.Step title="Mint your Amulet" icon={" "}  />
+                <Steps.Step title="Reveal your Amulet" icon={" "}  />
             </Steps>
+            <div>
+                <span style={{"float": "left"}}>Find an Amulet</span>
+                <span style={{"marginLeft": "30%"}}>Mint your Amulet</span>
+                <span style={{"float": "right"}}>Reveal your Amulet</span>
+            </div>
             {step === 0 && <AmuletFinder onFind={(amulet) => { setAmulet(amulet); setStep(1) }} />}
             {step === 1 && <AmuletMinter contracts={props.contracts} provider={props.provider} amulet={amulet} onBack={onBack} onMint={() => setStep(2)} />}
             {step === 2 && <AmuletRevealer contracts={props.contracts} provider={props.provider} amulet={amulet} onBack={onBack} onReveal={(amulet) => { setAmulet(amulet); setStep(3); }} />}

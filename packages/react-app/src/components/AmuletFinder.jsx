@@ -43,14 +43,37 @@ export default function AmuletFinder(props) {
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
     return (
         <Form>
-            <Form.Item>
-                <Input.TextArea rows={4} value={text} onChange={({target: { value }}) => setText(value)} />
+            <Form.Item label="">
+                {/* <Input.TextArea rows={4} cols={50} value={text} onChange={({ target: { value } }) => setText(value)} /> */}
+                
+                <textarea
+                    className="amulet-textarea"
+                    rows={1}
+                    cols={50}
+                    value={text}
+                    placeholder={"Type your poem here ..."}
+                    onChange={(e) => setText(e.target.value)}
+                />
             </Form.Item>
-            <Form.Item label="Rarity">
-                <Typography.Text>{rarity}</Typography.Text>
-            </Form.Item>
+                <div style={{"textDecoration":"underline"}}>
+                    <a>Load example</a>
+                        <div style={{"float": "right"}} className="next-step">
+                            <span className="next" style={{ "color": "#0038FF", "paddingLeft": "2px", "cursor": "pointer"}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#0038FF" className="next-arrow">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </span>
+                                <div style={{ "color": "#0038FF"}}>
+                                    Next
+                                </div>
+                        </div>
+                </div>
             <Form.Item>
-                <Button type="primary" disabled={score < 4 || countUtf8Bytes(text) > 64} onClick={() => props.onFind({text, score, id, rarity})}>Next</Button>
+                {rarity !== 'None' ? 
+                    <div className="body-text">
+                        This is { rarity === 'Uncommon' || rarity === 'Epic' ? "an" : "a"} {rarity.toLowerCase()} amulet.
+                    </div>
+                : null}
             </Form.Item>
         </Form>
     );
