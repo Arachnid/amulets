@@ -37,11 +37,14 @@ export default function AmuletRevealer(props) {
     } else {
         return (<>
             {userAddress !== amuletData.owner && <Alert message="Warning" description="This Amulet is owned by someone else. You can still reveal it if you wish, but they will own the revealed amulet!" type="warning" showIcon />}
-            <form style={{ "width": "100%", "paddingTop": "20px", "fontSize": "18px" }}>
+            <form
+                className="ant-form-item-control-input-content"
+                style={{ "width": "100%", "fontSize": "18px" }}>
                 <div style={{"paddingTop": "20px", "fontSize": "18px"}}>
                     <label>Title:</label>
                     <br />
                     <input
+                        className="amulet-input"
                         type="text"
                         value={title}
                         onChange={({ target: { value } }) => setTitle(value)}
@@ -59,8 +62,10 @@ export default function AmuletRevealer(props) {
                     <label>Carbon Offset URL:</label>
                     <br />
                     <textarea
-                        className="amulet-textarea"
+                        rows={1}
+                        cols={50}
                         value={offset}
+                        className="amulet-textarea"
                         onChange={({ target: { value } }) => setOffset(value)}
                     />
                 </div>

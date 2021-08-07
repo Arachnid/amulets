@@ -7,7 +7,7 @@
     padding-top: 20px;
 }
 
-.ant-form-item-control-input-content textarea {
+.ant-form-item-control-input-content textarea, .ant-form-item-control-input-content input {
     background-color: #333333;
 }
 
@@ -39,6 +39,22 @@
     text-align: center;
     padding-top: 100px;
     padding-bottom: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.amulet-input {
+    width: 100%;
+    /* color: #A0A0A0; */
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 33px;
+    /* text-indent: 32.5%; */
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 20px;
     padding-right: 20px;
 }
