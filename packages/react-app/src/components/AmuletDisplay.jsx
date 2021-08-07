@@ -12,7 +12,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export default function AmuletDisplay(props) {
     const opensea_url = `https://opensea.io/assets/${AmuletAddress}/${BigNumber.from(props.amulet.id).toString()}`
     return (
-        <form>
+        <form style={{"width":"100%", "paddingTop":"20px", "fontSize":"18px"}}>
                 <div style={{"paddingTop":"10px"}}>
                     Title:
                     <span style={{"paddingLeft":"1rem"}}>
