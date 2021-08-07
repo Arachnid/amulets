@@ -29,11 +29,66 @@ export default function AmuletRevealer(props) {
     };
 
     if(!amuletData) {
-        return <Typography.Text>Fetching amulet data...</Typography.Text>;
+        return (
+            <div style={{"paddingTop":"20px", "fontSize":"18px", "textAlign":"center"}}>
+                Fetching amulet data...
+            </div>
+        )
     } else {
         return (<>
             {userAddress !== amuletData.owner && <Alert message="Warning" description="This Amulet is owned by someone else. You can still reveal it if you wish, but they will own the revealed amulet!" type="warning" showIcon />}
-            <Form>
+            <form style={{ "width": "100%", "paddingTop": "20px", "fontSize": "18px" }}>
+                <div style={{"paddingTop": "20px", "fontSize": "18px"}}>
+                    <label>Title:</label>
+                    <br />
+                    <input
+                        type="text"
+                        value={title}
+                        onChange={({ target: { value } }) => setTitle(value)}
+                    />
+                </div>
+                <div style={{"paddingTop": "20px", "fontSize": "18px"}}>
+                    <div>
+                        Amulet:
+                        <span style={{"paddingLeft":"1rem"}}>
+                            {props.amulet.text}
+                        </span>
+                    </div>
+                </div>
+                <div style={{ "paddingTop": "20px", "fontSize": "18px" }}>
+                    <label>Carbon Offset URL:</label>
+                    <br />
+                    <textarea
+                        className="amulet-textarea"
+                        value={offset}
+                        onChange={({ target: { value } }) => setOffset(value)}
+                    />
+                </div>
+                <div style={{ "paddingTop": "20px", "fontSize": "18px" }}>
+                    <div>
+                        Rarity: 
+                        <span style={{"paddingLeft":"1rem"}}>
+                            {props.amulet.rarity}
+                        </span>
+                    </div>
+                </div>
+                <div style={{"paddingTop":"20px", "fontSize":"18px"}}>
+                    <a
+                        onClick={props.onBack}
+                        style={{"cursor":"pointer"}}
+                    >
+                        Back
+                    </a>
+                    <span
+                        onClick={reveal}
+                        style={{ "float": "right", "cursor": "pointer" }}
+                        disabled={!props.contracts || !offset}
+                    >
+                        Reveal
+                    </span>
+                </div>
+            </form>
+            {/* <Form>
                 <Form.Item label="Title"><Input.TextArea value={title} onChange={({target: { value }}) => setTitle(value)} /></Form.Item>
                 <Form.Item label="Amulet"><Typography.Text style={{whiteSpace: "pre"}}>{props.amulet.text}</Typography.Text></Form.Item>
                 <Form.Item label="Carbon Offset URL"><Input.TextArea value={offset} onChange={({target: { value }}) => setOffset(value)} /></Form.Item>
@@ -42,7 +97,7 @@ export default function AmuletRevealer(props) {
                     <Button onClick={props.onBack}>Back</Button>
                     <Button onClick={reveal} disabled={!props.contracts || !offset}>Reveal</Button>
                 </Form.Item>
-            </Form>
+            </Form> */}
         </>);
     }
 }
