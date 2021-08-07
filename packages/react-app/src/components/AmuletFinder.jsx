@@ -68,7 +68,7 @@ export default function AmuletFinder(props) {
                         style={{"textDecoration":"underline", "color": "#bdbdbd"}}
                     >Load example</a>
                         <div 
-                            style={{"float": "right"}}
+                            style={{"float": "right", "cursor": "pointer"}}
                             className="next-step"
                             onClick={() => props.onFind({text, score, id, rarity})}
                         >
