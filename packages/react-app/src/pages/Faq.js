@@ -44,6 +44,17 @@ const Faq = () => {
                     </ol>
                 </p>
             </div>
+            <div style={{"paddingTop":"20px"}}>
+                <p>
+                    Description is from Robin Sloan’s{" "}
+                    <a
+                        href="https://text.bargains/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{"textDecoration":"underline", "color":"blue"}}
+                    >text.bargains</a>
+                </p>
+            </div>
         </PageLayout>
     )
 }
