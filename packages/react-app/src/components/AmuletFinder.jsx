@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Form, Input, Typography } from "antd";
-import { ethers } from "ethers";
+import { ethers, utils } from "ethers";
 
 // ! scoreAmulet doesn't return the hash like in the mock
 
@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 
 function scoreAmulet(text) {
     const hash = ethers.utils.sha256(Buffer.from(text));
-    
+    console.log("hash", hash)
     let longest = 0;
     let current = 0;
     for(let i = 0; i < hash.length; i++) {
@@ -20,7 +20,7 @@ function scoreAmulet(text) {
         }
     }
     
-    return longest;
+    return longest
 }
 
 const RARITIES = {
@@ -45,12 +45,14 @@ function countUtf8Bytes(s){
 export default function AmuletFinder(props) {
     const [text, setText] = React.useState('');
     const score = scoreAmulet(text);
-    const id = ethers.utils.keccak256(Buffer.from(text));
+    // const id = ethers.utils.keccak256(Buffer.from(text));
+    const id = ethers.utils.sha256(Buffer.from(text))
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
 
-    console.log("BYTES", countUtf8Bytes(text))
+    console.log(id)
     return (
         <Form>
+            
             <Form.Item label="">
                 {/* <Input.TextArea rows={4} cols={50} value={text} onChange={({ target: { value } }) => setText(value)} /> */}
                 
@@ -91,9 +93,10 @@ export default function AmuletFinder(props) {
                         SHA-256 hash:
                             <span style={{"float": "right"}}>
                                 {countUtf8Bytes(text)} bytes
+                                {/* {console.log(isValidAmuletCount(text))} */}
                             </span>
                             <br/>
-                            {id}
+                            {id.split('x')[1]}
                         </div>
                     </>
                 : null}
