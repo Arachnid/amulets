@@ -45,6 +45,7 @@ function countUtf8Bytes(s){
 export default function AmuletFinder(props) {
     const [text, setText] = React.useState('');
     const score = scoreAmulet(text);
+    console.log(score)
     // const id = ethers.utils.keccak256(Buffer.from(text));
     const id = ethers.utils.sha256(Buffer.from(text))
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
@@ -69,20 +70,24 @@ export default function AmuletFinder(props) {
                     <a
                         style={{"textDecoration":"underline", "color": "#bdbdbd"}}
                     >Load example</a>
-                        <div 
-                            style={{"float": "right", "cursor": "pointer"}}
+                        <button
+                            id="next-button"
+                            style={{"float": "right"}}
                             className="next-step"
+                            disabled={score < 4 ? true : false}
                             onClick={() => props.onFind({text, score, id, rarity})}
                         >
                             <span className="next" style={{ "color": "#0038FF", "paddingLeft": "2px", "cursor": "pointer"}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#0038FF" className="next-arrow">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke={score > 3 ? "#0038FF" : "#bdbdbd"} className="next-arrow">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </span>
-                                <div style={{ "color": "#0038FF"}}>
+                                <div 
+                                    style={{"color":`${score > 3 ? "#0038FF" : "#bdbdbd"}` }}
+                                >
                                     Next
                                 </div>
-                        </div>
+                        </button>
                 </div>
                 {rarity !== 'None' ? 
                     <>
