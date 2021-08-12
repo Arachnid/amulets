@@ -28,16 +28,6 @@ import './styles/header.css'
 import './styles/transaction.css'
 import './styles/amulet-form.css'
 
-//! TO DO LIST
-
-// TODO Add actual svg to pages - to switch to white on dark mode
-// TODO Add conditional rendering for triangle png toggle ("/collection") - switch to white on dark mode
-//? TODO Create collection/rev/1
-//? TODO Create collection/rev/2
-
-
-
-
 
 const { BufferList } = require('bl')
 // https://www.npmjs.com/package/ipfs-http-client
@@ -190,8 +180,6 @@ function App(props) {
       </div>
     );
   }
-
-  console.log(address)
 
   return (
     <React.Fragment>

@@ -2,10 +2,6 @@ import React from "react";
 import { Button, Form, Input, Typography } from "antd";
 import { ethers, utils } from "ethers";
 
-// ! scoreAmulet doesn't return the hash like in the mock
-
-// ! countUtf8Bytes doesn't return the actual number of bytes - just the length of the text 
-
 function scoreAmulet(text) {
     const hash = ethers.utils.sha256(Buffer.from(text));
     console.log("hash", hash)
