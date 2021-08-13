@@ -32,6 +32,22 @@ const RARITIES = {
     9: 'Mythic'
 };
 
+const exampleAmulets = [
+    "decentralized",
+    "at.amulet.garden",
+    "perhaps.eth",
+    "for the data being hashed – this is dire",
+    "[Exit.]",
+    "That is always best which gives me to myself.",
+    "non-being",
+    "And the seas will lift as the night.",
+    // "an old person:\nhe opens his door\nand looks out\non the street"
+]
+
+const getRandomAmulet = () => {
+    return exampleAmulets[Math.floor(Math.random() * exampleAmulets.length)]
+}
+
 function countUtf8Bytes(s){
     var b = 0, i = 0, c
     for(;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
@@ -46,7 +62,7 @@ export default function AmuletFinder(props) {
     const id = ethers.utils.sha256(Buffer.from(text))
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
 
-    console.log(id)
+    // console.log(text)
     return (
         <Form>
             
@@ -65,7 +81,10 @@ export default function AmuletFinder(props) {
                 <div style={{"textDecoration":"underline"}}>
                     <a
                         style={{"textDecoration":"underline", "color": "#bdbdbd"}}
-                    >Load example</a>
+                        onClick={() => setText(getRandomAmulet())}
+                    >
+                        Load example
+                    </a>
                         <button
                             id="next-button"
                             style={{"float": "right"}}
