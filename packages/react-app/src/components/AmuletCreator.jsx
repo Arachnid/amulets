@@ -7,17 +7,29 @@ import { default as AmuletRevealer } from "./AmuletRevealer";
 import { default as AmuletDisplay } from "./AmuletDisplay";
 
 export default function AmuletCreator(props) {
+
     const [amulet, setAmulet] = React.useState(null);
     const [step, setStep] = React.useState(0);
     const onBack = () => setStep(0);
     return (
         <>
-            <Steps size="small" current={step}>
-                <Steps.Step title="Find an Amulet" />
-                <Steps.Step title="Mint your Amulet" />
-                <Steps.Step title="Reveal your Amulet" />
-                <Steps.Step title="Done" />
-            </Steps>
+            <div style={{"textAlign": "center", "paddingBottom":"20px"}}>
+                <img
+                    alt="Amulets" 
+                    src={process.env.PUBLIC_URL + './symbol-4.svg'}
+                    className="amulet-symbol"
+                />
+            </div>
+            {/* <Steps size="small" current={step}>
+                <Steps.Step title="Find an Amulet" icon={" "} />
+                <Steps.Step title="Mint your Amulet" icon={" "}  />
+                <Steps.Step title="Reveal your Amulet" icon={" "}  />
+            </Steps> */}
+            <div>
+                <span id={step === 0 || step === 1 ? 'active' : 'inactive'} style={{"float": "left"}}>Find an Amulet</span>
+                <span id={step === 2 ? 'active' : 'inactive'} style={{"marginLeft": "30%"}}>Mint your Amulet</span>
+                <span id={step === 3 ? 'active' : 'inactive'} style={{"float": "right"}}>Reveal your Amulet</span>
+            </div>
             {step === 0 && <AmuletFinder onFind={(amulet) => { setAmulet(amulet); setStep(1) }} />}
             {step === 1 && <AmuletMinter contracts={props.contracts} provider={props.provider} amulet={amulet} onBack={onBack} onMint={() => setStep(2)} />}
             {step === 2 && <AmuletRevealer contracts={props.contracts} provider={props.provider} amulet={amulet} onBack={onBack} onReveal={(amulet) => { setAmulet(amulet); setStep(3); }} />}

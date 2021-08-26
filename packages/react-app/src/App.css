@@ -1,3 +1,105 @@
 .App {
   text-align: center;
 }
+
+@font-face {
+  font-family: "CrimsonText-Bold";
+  src: url('./styles/fonts/CrimsonText-Bold.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-BoldItalic";
+  src: url('./styles/fonts/CrimsonText-BoldItalic.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-Italic";
+  src: url('./styles/fonts/CrimsonText-Italic.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-Regular";
+  src: url('./styles/fonts/CrimsonText-Regular.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-SemiBold";
+  src: url('./styles/fonts/CrimsonText-SemiBold.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CrimsonText-SemiBoldItalic";
+  src: url('./styles/fonts/CrimsonText-SemiBoldItalic.woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YatraOne-Regular";
+  src: url('./styles/fonts/YatraOne-Regular.ttf');
+  font-display: swap;
+}
+
+div, a, p, section, button, ul, li, table, td, th, tr, ol {
+  font-family: "CrimsonText-Regular";
+}
+
+b {
+  font-family: "CrimsonText-Bold";
+}
+
+em {
+  font-family: "CrimsonText-Italic"
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "CrimsonText-SemiBold";
+}
+
+b > em {
+  font-family: "CrimsonText-BoldItalic";
+}
+
+b > a {
+  font-family: "CrimsonText-Bold";
+  color: blue;
+}
+
+h1  > em, h2 > em, h3 > em, h4 > em, h5 > em, h6 > em {
+  font-family: "CrimsonText-SemiBoldItalic";
+}
+
+.amulet-symbol {
+  width: 62px;
+  height: 95px;
+}
+
+.body-text {
+  text-align: center;
+  font-size: 18px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+.faq-question {
+  padding-top: 20px;
+  font-size: 16px;
+}
+
+.faq-question p {
+  padding-top: 10px;
+}
+
+.ordered-faq {
+  display: flex;
+  flex-direction: column;
+}
+
+/**  flip horizontally */
+/* .flip {
+  transform: scaleY(-1);
+} */

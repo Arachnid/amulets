@@ -1,0 +1,37 @@
+
+.header {
+    position: absolute;
+    height: 100px;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+    justify-content: space-evenly;
+    /* justify-content: center; */
+    /* column-gap: 130px; */
+}
+
+.nav-item {
+    margin-left: -30px;
+    border-bottom: 1px solid black;
+    /* text-decoration: underline; */
+}
+
+.active {
+    text-decoration: line-through;
+}
+
+.title {
+    padding-top: 50px;
+}
+
+.site-title {
+    text-align: center;
+}
+
+.site-description {
+    text-align: center;
+    font-size: 24px;
+}

@@ -1,0 +1,30 @@
+
+.collection-grid {
+    display: grid;
+    grid-template-columns: auto;
+    padding: 10px;
+    column-gap: 6rem;
+    /* place-items: center; */
+}
+
+.collection-card {
+    background-color: #333333;
+    padding-top: 67px;
+    padding-bottom: 67px;
+    padding-left: 139px;
+    padding-right: 139px;
+}
+
+.transaction-header {
+    text-align: center;
+    font-size: 24px;
+    line-height: 33px;
+    color: #FFFFFF;
+    white-space: pre-wrap;
+}
+
+.transaction-body {
+    padding-top: 10px;
+    font-size: 16px;
+    color: #828282
+}

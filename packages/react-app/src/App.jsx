@@ -16,6 +16,19 @@ import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 import ReactJson from 'react-json-view'
+
+//! import pages
+import Home from './pages/Home'
+import Faq from './pages/Faq'
+import Collection from './pages/Collection'
+import Scratchpad from './pages/Scratchpad'
+
+//! import styles
+import './styles/header.css'
+import './styles/transaction.css'
+import './styles/amulet-form.css'
+
+
 const { BufferList } = require('bl')
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require('ipfs-http-client');
@@ -58,21 +71,23 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 const blockExplorer = targetNetwork.blockExplorer;
 
 
-
 function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = injectedProvider || localProvider;
-  if(DEBUG) console.log({userProvider, injectedProvider, localProvider})
+  if (DEBUG) console.log({ userProvider, injectedProvider, localProvider })
+
+  // console.log("injectedProvider", injectedProvider)
+  // console.log("localProvider", localProvider)
 
   const address = useUserAddress(injectedProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
-
+  
   const yourLocalBalance = useBalance(localProvider, address);
 
   let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
-  if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
+  if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId)
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
@@ -92,7 +107,8 @@ function App(props) {
 
 
   let networkDisplay = ""
-  if(selectedChainId && targetNetwork.chainId != selectedChainId ){
+  if (selectedChainId && targetNetwork.chainId != selectedChainId) {
+    // console.log(selectedChainId)
     networkDisplay = (
       <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
         <Alert
@@ -107,13 +123,14 @@ function App(props) {
         />
       </div>
     )
-  }else{
-    networkDisplay = (
-      <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
-        {targetNetwork.name}
-      </div>
-    )
   }
+  // else {
+  //   networkDisplay = (
+  //     <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
+  //       {targetNetwork.name}
+  //     </div>
+  //   )
+  // }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -165,13 +182,14 @@ function App(props) {
   }
 
   return (
-    <div className="App">
+    <React.Fragment>
 
-      {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
-      <BrowserRouter>
+      {/* ✏️ Edit the header and change the title to your project name */}
+    {/* <div className="App"> */}
 
+      <BrowserRouter>
         {/* <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">Create an Amulet</Link>
@@ -185,61 +203,28 @@ function App(props) {
         </Menu> */}
 
         <Switch>
+            <Route path="/scratchpad"
+            >
+              <Scratchpad
+                address={address}
+                contracts={writeContracts}
+                provider={userProvider}
+              />
+            </Route>
+            <Route path="/collection" component={Collection} />
+            <Route path="/faq" component={Faq} />
           <Route path="/">
-            <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
+            {/* //! Homepage rendering */}
+            <Home
+              // address={address}
+              // contracts={writeContracts}
+              // provider={userProvider}
+            />
+            {/* <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
               {address && <AmuletCreator contracts={writeContracts} provider={userProvider} />}
               {!address && <Typography.Text>Connect your wallet to mint an amulet</Typography.Text>}
-            </div>
-
-            {/* <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
-              <List
-                bordered
-                dataSource={yourCollectibles}
-                renderItem={(item) => {
-                  const id = item.id.toNumber()
-                  return (
-                    <List.Item key={id+"_"+item.uri+"_"+item.owner}>
-
-                      <Card title={(
-                        <div>
-                          <span style={{fontSize:16, marginRight:8}}>#{id}</span> {item.name}
-                        </div>
-                      )}>
-                      <div><img src={item.image} style={{maxWidth:150}} /></div>
-                      <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        owner: <Address
-                            address={item.owner}
-                            ensProvider={mainnetProvider}
-                            blockExplorer={blockExplorer}
-                            fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={(newValue)=>{
-                            let update = {}
-                            update[id] = newValue
-                            setTransferToAddresses({ ...transferToAddresses, ...update})
-                          }}
-                        />
-                        <Button onClick={()=>{
-                          console.log("writeContracts",writeContracts)
-                          tx( writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id) )
-                        }}>
-                          Transfer
-                        </Button>
-                      </div>
-                    </List.Item>
-                  )
-                }}
-              />
             </div> */}
-
-          </Route>
+            </Route>
         </Switch>
       </BrowserRouter>
 
@@ -261,7 +246,8 @@ function App(props) {
          />
           {faucetHint}
       </div>
-    </div>
+    {/* </div> */}
+    </React.Fragment>
   );
 }
 
