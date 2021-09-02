@@ -43,7 +43,7 @@ task("mint", "Mint sample amulets")
 module.exports = {
   networks: {
     test: {
-      url: "http://localhost:8545/"
+      url: "http://localhost:9545/"
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/6f00acf9331b46c482e81341d0e81e99",

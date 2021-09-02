@@ -93,16 +93,6 @@ export default function AmuletRevealer(props) {
                     </span>
                 </div>
             </form>
-            {/* <Form>
-                <Form.Item label="Title"><Input.TextArea value={title} onChange={({target: { value }}) => setTitle(value)} /></Form.Item>
-                <Form.Item label="Amulet"><Typography.Text style={{whiteSpace: "pre"}}>{props.amulet.text}</Typography.Text></Form.Item>
-                <Form.Item label="Carbon Offset URL"><Input.TextArea value={offset} onChange={({target: { value }}) => setOffset(value)} /></Form.Item>
-                <Form.Item label="Rarity"><Typography.Text>{props.amulet.rarity}</Typography.Text></Form.Item>
-                <Form.Item>
-                    <Button onClick={props.onBack}>Back</Button>
-                    <Button onClick={reveal} disabled={!props.contracts || !offset}>Reveal</Button>
-                </Form.Item>
-            </Form> */}
         </>);
     }
 }

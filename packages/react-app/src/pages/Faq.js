@@ -15,9 +15,8 @@ const Faq = () => {
             </div>
             <div className="faq-question">
                 <b>How do I mint my amulet?</b>
-                <p>This question is, unfortunately, beyond the scope of this website. Zora <a href="https://help.zora.co/en/articles/4876846-what-is-a-nft" target="_blank" rel="noopener noreferrer">
-                    offers a FAQ of its own
-                </a> that’s worth reading, along with a <a href="https://zora.engineering/" target="_blank" rel="noopener noreferrer">detailed schematic</a> for the technically-inclined.</p>
+                <p>Go to the <a href="/scratchpad">scratchpad</a>, enter your amulet, and follow the directions.</p>
+                <p>You can choose to just mint your amulet - in which case it will remain "a mysterious amulet" in the NFT view - or also reveal it to the world with a second transaction.</p>
             </div>
             <div className="faq-question">
                 <b>Isn’t it possible to generate rare amulets easily by larding a poem with obscure Unicode characters?</b>
@@ -27,10 +26,6 @@ const Faq = () => {
                 <b>Will anyone be impressed if I do this?</b>
                 <p>No.</p>
             </div>
-            {/* <div className="faq-question">
-                <b>Who made this website?</b>
-                <p>Me, Robin!</p>
-            </div> */}
             <div className="faq-question">
                 <b>Do you have anything to help me with the journey ahead?</b>
                 <p>Take these three common wind amulets:
@@ -46,7 +41,7 @@ const Faq = () => {
             </div>
             <div style={{"paddingTop":"20px"}}>
                 <p>
-                    Description is from Robin Sloan’s{" "}
+                    Description is modified from Robin Sloan’s{" "}
                     <a
                         href="https://text.bargains/"
                         target="_blank"

@@ -20,15 +20,10 @@ export default function AmuletCreator(props) {
                     className="amulet-symbol"
                 />
             </div>
-            {/* <Steps size="small" current={step}>
-                <Steps.Step title="Find an Amulet" icon={" "} />
-                <Steps.Step title="Mint your Amulet" icon={" "}  />
-                <Steps.Step title="Reveal your Amulet" icon={" "}  />
-            </Steps> */}
             <div>
-                <span id={step === 0 || step === 1 ? 'active' : 'inactive'} style={{"float": "left"}}>Find an Amulet</span>
-                <span id={step === 2 ? 'active' : 'inactive'} style={{"marginLeft": "30%"}}>Mint your Amulet</span>
-                <span id={step === 3 ? 'active' : 'inactive'} style={{"float": "right"}}>Reveal your Amulet</span>
+                <span id={step === 0 ? 'active' : 'inactive'} style={{"float": "left"}}>Find an Amulet</span>
+                <span id={step === 1 ? 'active' : 'inactive'} style={{"marginLeft": "30%"}}>Mint your Amulet</span>
+                <span id={step === 2 ? 'active' : 'inactive'} style={{"float": "right"}}>Reveal your Amulet</span>
             </div>
             {step === 0 && <AmuletFinder onFind={(amulet) => { setAmulet(amulet); setStep(1) }} />}
             {step === 1 && <AmuletMinter contracts={props.contracts} provider={props.provider} amulet={amulet} onBack={onBack} onMint={() => setStep(2)} />}

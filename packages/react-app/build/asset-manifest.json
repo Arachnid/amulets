@@ -1,26 +1,27 @@
 {
   "files": {
-    "main.css": "./static/css/main.db15ce02.chunk.css",
-    "main.js": "./static/js/main.12987b30.chunk.js",
-    "main.js.map": "./static/js/main.12987b30.chunk.js.map",
+    "main.css": "./static/css/main.14cf6848.chunk.css",
+    "main.js": "./static/js/main.0453fb84.chunk.js",
+    "main.js.map": "./static/js/main.0453fb84.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.c8135626.js",
     "runtime-main.js.map": "./static/js/runtime-main.c8135626.js.map",
-    "static/css/2.10e48097.chunk.css": "./static/css/2.10e48097.chunk.css",
-    "static/js/2.a4149038.chunk.js": "./static/js/2.a4149038.chunk.js",
-    "static/js/2.a4149038.chunk.js.map": "./static/js/2.a4149038.chunk.js.map",
+    "static/css/2.a88f433c.chunk.css": "./static/css/2.a88f433c.chunk.css",
+    "static/js/2.abbbdce6.chunk.js": "./static/js/2.abbbdce6.chunk.js",
+    "static/js/2.abbbdce6.chunk.js.map": "./static/js/2.abbbdce6.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.0063dee648f966a32a1c2576eaa4e6df.js": "./precache-manifest.0063dee648f966a32a1c2576eaa4e6df.js",
+    "precache-manifest.3e23ce59c708e27a23c67e142969a06f.js": "./precache-manifest.3e23ce59c708e27a23c67e142969a06f.js",
     "service-worker.js": "./service-worker.js",
-    "static/css/2.10e48097.chunk.css.map": "./static/css/2.10e48097.chunk.css.map",
-    "static/css/main.db15ce02.chunk.css.map": "./static/css/main.db15ce02.chunk.css.map",
-    "static/js/2.a4149038.chunk.js.LICENSE.txt": "./static/js/2.a4149038.chunk.js.LICENSE.txt",
-    "static/media/App.css": "./static/media/CrimsonText-SemiBoldItalic.b8cc38a1.woff"
+    "static/css/2.a88f433c.chunk.css.map": "./static/css/2.a88f433c.chunk.css.map",
+    "static/css/main.14cf6848.chunk.css.map": "./static/css/main.14cf6848.chunk.css.map",
+    "static/js/2.abbbdce6.chunk.js.LICENSE.txt": "./static/js/2.abbbdce6.chunk.js.LICENSE.txt",
+    "static/js/main.0453fb84.chunk.js.LICENSE.txt": "./static/js/main.0453fb84.chunk.js.LICENSE.txt",
+    "static/media/App.css": "./static/media/YatraOne-Regular.6353ee96.ttf"
   },
   "entrypoints": [
     "static/js/runtime-main.c8135626.js",
-    "static/css/2.10e48097.chunk.css",
-    "static/js/2.a4149038.chunk.js",
-    "static/css/main.db15ce02.chunk.css",
-    "static/js/main.12987b30.chunk.js"
+    "static/css/2.a88f433c.chunk.css",
+    "static/js/2.abbbdce6.chunk.js",
+    "static/css/main.14cf6848.chunk.css",
+    "static/js/main.0453fb84.chunk.js"
   ]
 }

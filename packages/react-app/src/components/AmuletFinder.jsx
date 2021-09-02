@@ -57,18 +57,14 @@ function countUtf8Bytes(s){
 export default function AmuletFinder(props) {
     const [text, setText] = React.useState('');
     const score = scoreAmulet(text);
-    console.log(score)
-    // const id = ethers.utils.keccak256(Buffer.from(text));
-    const id = ethers.utils.sha256(Buffer.from(text))
+    const id = ethers.utils.keccak256(Buffer.from(text));
+    const hash = ethers.utils.sha256(Buffer.from(text))
     const rarity = countUtf8Bytes(text) > 64 ? "Too Long" : (RARITIES[score] || 'Beyond Mythic');
 
-    // console.log(text)
     return (
         <Form>
             
             <Form.Item label="">
-                {/* <Input.TextArea rows={4} cols={50} value={text} onChange={({ target: { value } }) => setText(value)} /> */}
-                
                 <textarea
                     className="amulet-textarea"
                     rows={1}
@@ -113,10 +109,9 @@ export default function AmuletFinder(props) {
                         SHA-256 hash:
                             <span style={{"float": "right"}}>
                                 {countUtf8Bytes(text)} bytes
-                                {/* {console.log(isValidAmuletCount(text))} */}
                             </span>
                             <br/>
-                            {id.split('x')[1]}
+                            {hash.split('x')[1]}
                         </div>
                     </>
                 : null}
