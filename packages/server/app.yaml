@@ -7,7 +7,7 @@ handlers:
    upload: static/contract.json
  - url: /cron|/token.*
    script: auto
- - url: /
+ - url: /(|scratchpad|collection|faq)
    static_files: app/index.html
    upload: app/index.html
  - url: /(.*)

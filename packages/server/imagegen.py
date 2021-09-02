@@ -6,9 +6,11 @@ from hashlib import sha256
 
 IMAGE_WIDTH = 700
 IMAGE_HEIGHT = 700
-MAX_FONT_SIZE = 140
+MAX_FONT_SIZE = 48
 PADDING = 8
-FONT_FILE = "fonts/NotoSans-Regular.ttf"
+BGCOLOR = (51, 51, 51)
+FONTCOLOR = (255, 255, 255)
+FONT_FILE = "fonts/CrimsonText-SemiBold.ttf"
 
 
 def normalise_tuple(t, scale):
@@ -49,11 +51,11 @@ def render_text(img, text):
         # Scale down
         font_size = int(font_size / ratio)
     draw = ImageDraw.Draw(img)
-    draw.text(((IMAGE_WIDTH - w) / 2, (IMAGE_HEIGHT - h) / 2), text, fill=(0, 0, 0), font=font)
+    draw.multiline_text(((IMAGE_WIDTH - w) / 2, (IMAGE_HEIGHT - h) / 2), text, fill=FONTCOLOR, font=font, spacing=24)
 
 
 def render(text):
-    img = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), (255, 255, 255))
-    render_fingerprint(img, text)
+    img = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), BGCOLOR)
+    # render_fingerprint(img, text)
     render_text(img, text)
     return img
