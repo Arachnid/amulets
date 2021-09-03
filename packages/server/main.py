@@ -89,6 +89,7 @@ def amuletResponse(tokenhash, info):
     attributes = [
         {
             'trait_type': 'Score',
+            'display_type': 'number',
             'value': info.score,
         }, {
             'trait_type': 'Rarity',
@@ -99,12 +100,11 @@ def amuletResponse(tokenhash, info):
             'value': args['length'],
         }, {
             'value': 'Revealed',
-        },
+        }, {
+            'trait_type': 'Hidden Whitespace',
+            'value': 'Yes' if has_antics(info.amulet) else 'No',
+        }
     ]
-    if has_antics(info.amulet):
-        attributes.append({
-            'value': 'Antics'
-        })
     return jsonify({
         'name': info.title,
         'description': render_template('amulet.md', **args),
