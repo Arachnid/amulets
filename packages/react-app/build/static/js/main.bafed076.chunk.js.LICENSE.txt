@@ -1,0 +1,9 @@
+//! "author": "author: 0x8888 (me)",
+
+//! "header": "If you can't write poems, write me",
+
+//! "rarity": "rarity: uncommon",
+
+//! "timestamp": ["2021-02-23 — sold to 0xEC6D"]
+
+//! "title": "title: instructions to the prospector",
