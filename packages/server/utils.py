@@ -1,8 +1,8 @@
 from collections import namedtuple
 import json
 import pylru
+import re
 import time
-from web3.auto.infura import w3
 
 
 RARITIES = {
@@ -22,7 +22,7 @@ amulet_cache = pylru.lrucache(CACHE_SIZE)
 AmuletInfo = namedtuple('AmuletInfo', ['id', 'owner', 'score', 'title', 'amulet', 'offsetUrl'])
 
 
-def load_contract(name):
+def load_contract(w3, name):
     with open('contracts/%s.json' % (name,)) as f:
         abi = json.load(f)['abi']
     with open('contracts/%s.address' % (name,)) as f:
@@ -45,6 +45,14 @@ def get_amulet_data(contract, tokenid):
             toBlock=blockRevealed))
         if(len(events) == 1):
             event = events[0]
-            info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
+            info = AmuletInfo(tokenid, owner, score, event.args.title, tr_whitespace(event.args.amulet), event.args.offsetUrl)
     amulet_cache[tokenid] = (time.time() + MYSTERIOUS_CACHE_DURATION if info.score == 0 else KNOWN_CACHE_DURATION, info)
     return info
+
+def tr_whitespace(s):
+    # '\s\s|\s$|[^\S\n ]'
+    s = re.sub('\n$', '¶\n', s)
+    s = re.sub('\n{2,}', lambda match: '¶\n' * len(match.group(0)), s)
+    s = re.sub('\s{2,}', lambda match: '·' * len(match.group(0)), s)
+    s = re.sub('\s$', '·', s)
+    return re.sub('[^\S\n ]', '�', s)

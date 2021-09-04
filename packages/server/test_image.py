@@ -1,6 +1,9 @@
 import imagegen
 
 TEST_AMULETS = [
+    "a  b ",
+    "a\n\nb\n",
+    "a b",
     "We sought a talisman old meaning, and francophone",
     "     ✦\n•  ° °\n•✯    \n. ·   \n✸ .   \n  ✶✸  ",
     " ✸  \n. *.\n   ✯\n *✦ ",

@@ -2,7 +2,7 @@ from binascii import hexlify
 import colorsys
 from PIL import Image, ImageFont, ImageDraw
 from hashlib import sha256
-
+from utils import tr_whitespace
 
 IMAGE_WIDTH = 700
 IMAGE_HEIGHT = 700
@@ -57,5 +57,5 @@ def render_text(img, text):
 def render(text):
     img = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), BGCOLOR)
     # render_fingerprint(img, text)
-    render_text(img, text)
+    render_text(img, tr_whitespace(text))
     return img

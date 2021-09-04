@@ -11,10 +11,10 @@ from web3.auto.infura import w3
 
 from cron import cron
 import imagegen
-from utils import get_amulet_data, load_contract, RARITIES
+from utils import get_amulet_data, load_contract, RARITIES, tr_whitespace
 
 
-contract = load_contract('Amulet')
+contract = load_contract(w3, 'Amulet')
 visible_whitespace = str.maketrans(' \n\t', '·⏎⇥')
 
 app = Flask(__name__)
@@ -70,7 +70,7 @@ def has_antics(text):
 def mysteriousAmuletResponse(tokenhash, info):
     return jsonify({
         'name': 'A mysterious amulet',
-        'description': "A mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
+        'description': "DO NOT BUY THIS AMULET UNLESS YOU KNOW WHAT IT SAYS.\n\nA mysterious amulet someone claims to have found. Nothing is known about it until they choose to reveal it to the world.",
         'image': "https://at.amulet.garden/token/%s.png" % tokenhash,
         'attributes': [
             {
