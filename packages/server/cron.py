@@ -11,7 +11,7 @@ from utils import load_contract, AmuletInfo, RARITIES, amulet_cache, KNOWN_CACHE
 OPENSEA_DOMAIN = "api.opensea.io"
 DEPLOY_BLOCK = 12107104
 
-contract = load_contract('Amulet')
+contract = load_contract(w3, 'Amulet')
 client = datastore.Client()
 status_key = client.key('Status', '1')
 
