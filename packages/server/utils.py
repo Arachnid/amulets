@@ -50,9 +50,7 @@ def get_amulet_data(contract, tokenid):
     return info
 
 def tr_whitespace(s):
-    # '\s\s|\s$|[^\S\n ]'
-    s = re.sub('\n$', '¶\n', s)
-    s = re.sub('\n{2,}', lambda match: '¶\n' * len(match.group(0)), s)
-    s = re.sub('\s{2,}', lambda match: '·' * len(match.group(0)), s)
-    s = re.sub('\s$', '·', s)
-    return re.sub('[^\S\n ]', '�', s)
+    s = re.sub('\n+$', lambda match: '¶\n' * len(match.group(0)), s) # Newlines at end of string
+    s = re.sub(' {2,}', lambda match: '·' * len(match.group(0)), s) # Multiple spaces in a row
+    s = re.sub('\s$', '·', s) # Space at end of string
+    return re.sub('[^\S\n ]', '�', s) # Other whitespace

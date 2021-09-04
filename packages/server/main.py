@@ -62,9 +62,9 @@ def tokenimage(tokenhash):
 
 
 def has_antics(text):
-    # Multiple consecutive whitespace, whitespace at end of string,
+    # Multiple consecutive spaces, whitespace at end of string,
     # or whitespace other than space and newline
-    return re.search('\s\s|\s$|[^\S\n ]', text) is not None
+    return re.search(' {2,}|\s$|[^\S\n ]', text) is not None
 
 
 def mysteriousAmuletResponse(tokenhash, info):
