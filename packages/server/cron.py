@@ -5,7 +5,7 @@ import time
 import tweepy
 from web3.auto.infura import w3
 
-from utils import load_contract, AmuletInfo, RARITIES, amulet_cache, KNOWN_CACHE_DURATION
+from utils import load_contract, AmuletInfo, RARITIES, amulet_cache, KNOWN_CACHE_DURATION, tr_whitespace
 
 
 OPENSEA_DOMAIN = "api.opensea.io"
@@ -34,7 +34,7 @@ def cron():
         # Populate the cache
         tokenid = event.args.tokenId
         owner, blockRevealed, score = contract.functions.getData(tokenid).call()
-        info = AmuletInfo(tokenid, owner, score, event.args.title, event.args.amulet, event.args.offsetUrl)
+        info = AmuletInfo(tokenid, owner, score, event.args.title, tr_whitespace(event.args.amulet), event.args.offsetUrl)
         amulet_cache[tokenid] = (time.time() + KNOWN_CACHE_DURATION, info)
 
         poke_opensea(info)
