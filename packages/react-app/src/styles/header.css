@@ -6,7 +6,7 @@
     top: 0px;
     width: 100%;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
     padding: 10px;
     justify-content: space-evenly;
     /* justify-content: center; */
