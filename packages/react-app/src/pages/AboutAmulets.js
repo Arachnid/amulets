@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PageLayout from '../utils/PageLayout'
 
-const AmuletMaker = () => {
+const AboutAmulets = () => {
 
     const [translation, setTranslation] = useState(true)
 
@@ -308,4 +308,4 @@ const AmuletMaker = () => {
     )
 }
 
-export default AmuletMaker
+export default AboutAmulets

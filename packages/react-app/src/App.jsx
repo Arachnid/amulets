@@ -22,7 +22,7 @@ import Home from './pages/Home'
 import Faq from './pages/Faq'
 import Collection from './pages/Collection'
 import Scratchpad from './pages/Scratchpad'
-import AmuletMaker from './pages/AmuletMaker'
+import AboutAmulets from './pages/AboutAmulets'
 
 //! import styles
 import './styles/header.css'
@@ -205,8 +205,8 @@ function App(props) {
 
         <Switch>
             <Route 
-              path="/amulet-maker"
-              component={AmuletMaker}
+              path="/about-amulets"
+              component={AboutAmulets}
             />
             <Route path="/scratchpad"
             >
