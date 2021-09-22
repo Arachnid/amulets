@@ -24,6 +24,9 @@ const Header = () => {
     <React.Fragment>
         <nav className="header">
           <div>
+            <a href="/amulet-maker" className={currentPage === 'amulet-maker' ? 'active' : 'nav-item'}>amulet maker</a>
+          </div>
+          <div>
             <a href="/scratchpad" className={currentPage === 'scratchpad' ? 'active' : 'nav-item'}>scratchpad</a>
           </div>
           <div>

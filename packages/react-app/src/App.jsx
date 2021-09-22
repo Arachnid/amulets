@@ -22,6 +22,7 @@ import Home from './pages/Home'
 import Faq from './pages/Faq'
 import Collection from './pages/Collection'
 import Scratchpad from './pages/Scratchpad'
+import AmuletMaker from './pages/AmuletMaker'
 
 //! import styles
 import './styles/header.css'
@@ -203,6 +204,10 @@ function App(props) {
         </Menu> */}
 
         <Switch>
+            <Route 
+              path="/amulet-maker"
+              component={AmuletMaker}
+            />
             <Route path="/scratchpad"
             >
               <Scratchpad
