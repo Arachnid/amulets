@@ -1,5 +1,6 @@
 from flask import abort, request
 from google.cloud import datastore
+import os
 import requests
 import time
 import tweepy
@@ -45,7 +46,9 @@ def cron():
 
 
 def poke_opensea(info):
-    result = requests.get("https://%s/api/v1/asset/%s/%d/?force_update=true" % (OPENSEA_DOMAIN, contract.address, info.id))
+    result = requests.get(
+        "https://%s/api/v1/asset/%s/%d/?force_update=true" % (OPENSEA_DOMAIN, contract.address, info.id),
+        headers={"X-API-KEY": os.environ['OPENSEA_API_KEY']})
     if result.status_code == 404: return
     result.raise_for_status()
 
